@@ -75,7 +75,7 @@ const Home = () => {
              Clevertap    <span className="text-color-primary">React Integration</span>
             </h2>
               <p className="m-0 mb-32 reveal-from-bottom" data-reveal-delay="400">
-              CleverTap is a customer engagement and retention platform that provides the functionality to integrate app analytics and marketing.
+              CleverTap is a customer engagement and retention platform that provides the functionality to integrate app analytics and marketing !! 
                 </p>
               <div className="reveal-from-bottom" data-reveal-delay="600">
                 <ButtonGroup>
