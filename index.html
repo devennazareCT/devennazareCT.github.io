@@ -4,6 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome to My Website</title>
+
+  <!-- 🔹 CleverTap Setup Script -->
+  <script type="text/javascript">
+    var clevertap = {event:[], profile:[], account:[], onUserLogin:[], notifications:[], privacy:[]};
+    // Replace with your actual CleverTap Account ID
+    clevertap.account.push({ "id": "TEST-654-Z9R-646Z" });
+    clevertap.privacy.push({optOut: false}); // user has not opted out
+    clevertap.privacy.push({useIP: false});  // user does not share IP data
+
+    (function () {
+      var wzrk = document.createElement('script');
+      wzrk.type = 'text/javascript';
+      wzrk.async = true;
+      wzrk.src = (document.location.protocol == 'https:' ? 
+        'https://d2r1yp2w7bby2u.cloudfront.net' : 
+        'http://static.clevertap.com') + '/js/clevertap.min.js';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(wzrk, s);
+    })();
+  </script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -24,11 +45,30 @@
       color: #fff;
       text-decoration: underline;
     }
+    button {
+      background-color: #fff;
+      color: #007BFF;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 40px;
+      transition: all 0.3s;
+    }
+    button:hover {
+      background-color: #e6e6e6;
+    }
   </style>
 </head>
 <body>
   <h1>Hello, I'm Deven 👋</h1>
-  <p>Welcome to my GitHub Pages website!</p>
+  <p>Welcome to my CleverTap Website!</p>
   <p>Visit my <a href="https://github.com/devennazareCT" target="_blank">GitHub Profile</a></p>
+
+  <!-- 🔘 CleverTap Button -->
+  <button onclick='clevertap.event.push("Product viewed"); alert("Event: Product viewed sent!");'>
+    Track Product Viewed Event
+  </button>
 </body>
 </html>
