@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome to My Website</title>
+
+ <!-- 🔹 CleverTap SDK Setup Script -->
 <script type="text/javascript">
     var clevertap = {event:[], profile:[], account:[], onUserLogin:[], notifications:[], privacy:[]};
     // Replace with your actual CleverTap Account ID
@@ -61,6 +63,7 @@
   </style>
 </head>
 <body>
+     <!-- 🔹 Register Service WORKER -->
     <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
@@ -76,6 +79,7 @@
     console.warn('Service workers are not supported in this browser.');
   }
 </script>
+   <!-- 🔹 Register Service WORKER -->
 
   <h1>Hello, I'm Deven 👋</h1>
   <p>Welcome to my CleverTap Website! !</p>
@@ -85,6 +89,7 @@
   <button onclick='clevertap.event.push("Product viewed"); alert("Event: Product viewed sent!");'>
     Track Product Viewed Event !
   </button>
+     <!-- 🔹 Show Permission Popup -->
     <button onclick='clevertap.notifications.push({
    	"titleText": "Would you like to receive Push Notifications?",
    	"bodyText": "We promise to only send you relevant content and give you updates on your transactions",
@@ -95,5 +100,8 @@
   });'>
     Ask for Permission
   </button>
+
+       <!-- 🔹 Show Permission Popup -->
+
 </body>
 </html>
