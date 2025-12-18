@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giveaway Popup</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        body.gift-mode {
+            background: transparent;
+        }
+        
+        .gift-screen {
+            background: transparent;
+            text-align: center;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .gift-gif {
+            max-width: 200px;
+            width: 100%;
+            height: auto;
+            margin-bottom: 30px;
+            filter: drop-shadow(0 0 20px #ffd700) drop-shadow(0 0 40px #ff6b35);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from {
+                filter: drop-shadow(0 0 20px #ffd700) drop-shadow(0 0 40px #ff6b35);
+            }
+            to {
+                filter: drop-shadow(0 0 30px #ffd700) drop-shadow(0 0 60px #ff6b35);
+            }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .popup {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #4a90e2 100%);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            width: 400px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .title {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .free-text {
+            color: #ffd700;
+            font-weight: bold;
+        }
+        
+        .giveaway-text {
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+            margin: 20px 0;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+        }
+        
+        .rewards-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+            gap: 15px;
+        }
+        
+        .coins {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #b8860b;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .bag {
+            background: linear-gradient(45deg, #ff8c00, #ffa500);
+            padding: 20px;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .bag-handle {
+            width: 60px;
+            height: 15px;
+            background: #ffd700;
+            border-radius: 10px;
+            margin: 0 auto 10px;
+        }
+        
+        .osm-logo {
+            background: #4a90e2;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .gem {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #00bfff, #87ceeb);
+            clip-path: polygon(50% 0%, 0% 50%, 50% 100%, 100% 50%);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .claim-btn {
+            background: linear-gradient(45deg, #4a90e2, #5ba0f2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 30px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+        }
+        
+        .claim-btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="popup">
+        <div class="close-btn">×</div>
+        
+        <div class="title">
+            HEY BOSS, OPEN UP THIS <span class="free-text">FREE</span>
+        </div>
+        
+        <div class="giveaway-text">GIVEAWAY</div>
+        
+        <div class="rewards-container">
+            <div class="coins">💰</div>
+            
+            <div class="bag">
+                <div class="bag-handle"></div>
+                <div class="osm-logo">OSM</div>
+            </div>
+            
+            <div class="gem"></div>
+        </div>
+        
+        <button class="claim-btn" onclick="showGift()">Claim reward</button>
+    </div>
+    
+    <div class="gift-screen hidden" id="giftScreen">
+        <img src="https://i.ibb.co/4nTGdtF9/gift-9234-256.gif" alt="Gift" class="gift-gif">
+        <button class="claim-btn" onclick="window.parent.invokePopup()">Claim now</button>
+    </div>
+    
+    <script>
+        function showGift() {
+            document.querySelector('.popup').classList.add('hidden');
+            document.getElementById('giftScreen').classList.remove('hidden');
+            document.body.classList.add('gift-mode');
+        }
+    </script>
+</body>
+</html>
