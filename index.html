@@ -23,6 +23,19 @@
       var s = document.getElementsByTagName('script')[0];
       s.parentNode.insertBefore(wzrk, s);
     })();
+
+    // Show notification permission popup on page load
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        clevertap.notifications.push({
+          "titleText": "Would you like to receive Push Notifications?",
+          "bodyText": "We promise to only send you relevant content and give you updates on your transactions",
+          "okButtonText": "Sign me up!",
+          "rejectButtonText": "No thanks",
+          "okButtonColor": "#F28046"
+        });
+      }, 2000); // Wait 2 seconds for CleverTap to load
+    });
   </script>
   <!-- 🔹 CleverTap Setup Script -->
 
