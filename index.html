@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome to My Website</title>
 
- <!-- 🔹 CleverTap SDK Setup Script (COMMENTED OUT) -->
-<!-- <script type="text/javascript">
+ <!-- 🔹 CleverTap SDK Setup Script -->
+<script type="text/javascript">
     var clevertap = {event:[], profile:[], account:[], onUserLogin:[], notifications:[], privacy:[]};
     // Replace with your actual CleverTap Account ID
     clevertap.account.push({ "id": "TEST-654-Z9R-646Z" });
@@ -23,20 +23,11 @@
       var s = document.getElementsByTagName('script')[0];
       s.parentNode.insertBefore(wzrk, s);
     })();
+  </script>
+  <!-- 🔹 CleverTap Setup Script -->
 
-    clevertap.notifications.push({
-   	"titleText": "Would you like to receive Push Notifications?",
-   	"bodyText": "We promise to only send you relevant content and give you updates on your transactions",
-   	"okButtonText": "Sign me up!",
-   	"rejectButtonText": "No thanks",
-   	"okButtonColor":"#F28046",
-   	"askAgainTimeInSeconds":5,
-  });
-  </script> -->
-  <!-- 🔹 CleverTap Setup Script (COMMENTED OUT) -->
-
-  <!-- 🔥 Firebase SDK -->
-  <script type="module">
+  <!-- 🔥 Firebase SDK (COMMENTED OUT) -->
+  <!-- <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
     import { getMessaging, getToken, onMessage } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js';
 
@@ -77,8 +68,8 @@
     onMessage(messaging, (payload) => {
       console.log('Message received:', payload);
     });
-  </script>
-  <!-- 🔥 Firebase SDK -->
+  </script> -->
+  <!-- 🔥 Firebase SDK (COMMENTED OUT) -->
 
   <style>
     body {
@@ -117,39 +108,32 @@
   </style>
 </head>
 <body>
-     <!-- 🔥 Register Firebase Service Worker -->
+     <!-- 🔹 Register CleverTap Service Worker -->
     <script>
-  let swRegistration = null;
-  
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', async function() {
-      try {
-        swRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-        console.log('Firebase Service Worker registered with scope:', swRegistration.scope);
-        
-        // Wait for service worker to be ready
-        await navigator.serviceWorker.ready;
-        console.log('Service Worker is ready');
-      } catch (error) {
-        console.error('Firebase Service Worker registration failed:', error);
-      }
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/clevertap_sw.js')
+        .then(function(registration) {
+          console.log('CleverTap Service Worker registered with scope:', registration.scope);
+        })
+        .catch(function(error) {
+          console.error('CleverTap Service Worker registration failed:', error);
+        });
     });
   } else {
     console.warn('Service workers are not supported in this browser.');
   }
 </script>
-   <!-- 🔥 Register Firebase Service Worker -->
+   <!-- 🔹 Register CleverTap Service Worker -->
 
   <h1>Hello, I'm Deven 👋</h1>
   <p>Welcome to my CleverTap Website! !</p>
   <p>Visit my <a href="https://github.com/devennazareCT/devennazareCT.github.io.git" target="_blank">GitHub Repo</a></p>
 
-  <!-- 🔘 Firebase Buttons -->
-  <button onclick='requestNotificationPermission()'>
-    Request Push Permission
+  <!-- 🔘 CleverTap Buttons -->
+  <button onclick='clevertap.event.push("Product viewed");'>
+    Track Product Viewed Event
   </button>
-  
-  <div id="token-display" style="margin-top: 20px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; word-break: break-all; font-size: 12px;"></div>
   
        <!-- 🔹 Show Permission Popup -->
 <script>
