@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Email Preferences</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- -------- CleverTap Init (REQUIRED) -------- -->
+  <script type="text/javascript">
+    var clevertap = {
+      event: [],
+      profile: [],
+      region: 'eu1',
+      account: [],
+      onUserLogin: [],
+      notifications: []
+    };
+
+    // Replace with your actual Account ID
+    clevertap.account.push({ "id": "468-W87-546Z" });
+
+    (function () {
+      var wzrk = document.createElement('script');
+      wzrk.type = 'text/javascript';
+      wzrk.async = true;
+      wzrk.src = 'https://d2r1yp2w7bby2u.cloudfront.net/js/clevertap.min.js';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(wzrk, s);
+    })();
+  </script>
+
+  <!-- -------- CleverTap Email Unsubscribe Helper -------- -->
+  <script src="https://static.clevertap.com/js/wzrk_email.js"></script>
+
+  <!-- -------- UI Styles -------- -->
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa, #e4ecf5);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    }
+
+    .card {
+      background: #ffffff;
+      padding: 32px;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      text-align: center;
+    }
+
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 22px;
+      color: #222;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 24px;
+    }
+
+    .card input {
+      width: 100%;
+      padding: 12px;
+      font-size: 14px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+      margin-bottom: 20px;
+    }
+
+    .card button {
+      width: 100%;
+      padding: 12px;
+      font-size: 15px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: #e53935;
+      color: #fff;
+      font-weight: 600;
+      transition: background 0.2s ease;
+    }
+
+    .card button:hover {
+      background: #c62828;
+    }
+
+    .status {
+      margin-top: 16px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .success {
+      color: #2e7d32;
+    }
+
+    .error {
+      color: #c62828;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h2>Email Preferences</h2>
+    <p>You can unsubscribe from future emails below.</p>
+
+    <input type="text" id="email" readonly placeholder="Fetching your email…" />
+
+    <button onclick="unsubscribe()">Unsubscribe me</button>
+
+    <div id="status" class="status"></div>
+  </div>
+
+  <!-- -------- Logic -------- -->
+  <script>
+    // Set to true ONLY if your server re-encodes the URL
+    var isReEncode = false;
+
+    // Fetch email on load
+    window.onload = function () {
+      if (window.$WZRK_WR) {
+        $WZRK_WR.getEmail(isReEncode);
+      }
+    };
+
+    // Called automatically by CleverTap
+    function wzrk_email_fetched(emailStr) {
+      document.getElementById("email").value = emailStr || "Email not found";
+    }
+
+    // Subscription status callback
+    function wzrk_email_subscription(status) {
+      var statusDiv = document.getElementById("status");
+
+      if (status === 0) {
+        statusDiv.innerHTML = "You have been successfully unsubscribed.";
+        statusDiv.className = "status success";
+      } else {
+        statusDiv.innerHTML = "You are subscribed.";
+        statusDiv.className = "status";
+      }
+    }
+
+    // Unsubscribe action
+    function unsubscribe() {
+      var statusDiv = document.getElementById("status");
+      statusDiv.innerHTML = "Processing your request…";
+      statusDiv.className = "status";
+
+      $WZRK_WR.unSubEmail(isReEncode);
+    }
+  </script>
+</body>
+</html>
