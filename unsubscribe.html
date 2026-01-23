@@ -16,7 +16,6 @@
       notifications: []
     };
 
-    // Replace with your actual Account ID
     clevertap.account.push({ "id": "468-W87-546Z" });
 
     (function () {
@@ -86,11 +85,6 @@
       background: #e53935;
       color: #fff;
       font-weight: 600;
-      transition: background 0.2s ease;
-    }
-
-    .card button:hover {
-      background: #c62828;
     }
 
     .status {
@@ -101,10 +95,6 @@
 
     .success {
       color: #2e7d32;
-    }
-
-    .error {
-      color: #c62828;
     }
   </style>
 </head>
@@ -123,22 +113,31 @@
 
   <!-- -------- Logic -------- -->
   <script>
-    // Set to true ONLY if your server re-encodes the URL
     var isReEncode = false;
 
-    // Fetch email on load
+    function getQueryParam(param) {
+      var params = new URLSearchParams(window.location.search);
+      return params.get(param);
+    }
+
     window.onload = function () {
-      if (window.$WZRK_WR) {
+      var emailFromUrl = getQueryParam("email");
+
+      if (emailFromUrl) {
+        document.getElementById("email").value =
+          decodeURIComponent(emailFromUrl);
+      } else if (window.$WZRK_WR) {
         $WZRK_WR.getEmail(isReEncode);
       }
     };
 
-    // Called automatically by CleverTap
     function wzrk_email_fetched(emailStr) {
-      document.getElementById("email").value = emailStr || "Email not found";
+      if (!document.getElementById("email").value) {
+        document.getElementById("email").value =
+          emailStr || "Email not found";
+      }
     }
 
-    // Subscription status callback
     function wzrk_email_subscription(status) {
       var statusDiv = document.getElementById("status");
 
@@ -151,7 +150,6 @@
       }
     }
 
-    // Unsubscribe action
     function unsubscribe() {
       var statusDiv = document.getElementById("status");
       statusDiv.innerHTML = "Processing your request…";
