@@ -5,85 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome to My Website</title>
 
- <!-- 🔹 CleverTap SDK Setup Script -->
-<script type="text/javascript">
-    var clevertap = {event:[], profile:[], account:[], onUserLogin:[], notifications:[], privacy:[]};
-    // Replace with your actual CleverTap Account ID
-    clevertap.account.push({ "id": "TEST-654-Z9R-646Z" });
-    clevertap.privacy.push({optOut: false}); // user has not opted out
-    clevertap.privacy.push({useIP: false});  // user does not share IP data
-
-    (function () {
-      var wzrk = document.createElement('script');
-      wzrk.type = 'text/javascript';
-      wzrk.async = true;
-      wzrk.src = (document.location.protocol == 'https:' ? 
-        'https://d2r1yp2w7bby2u.cloudfront.net' : 
-        'http://static.clevertap.com') + '/js/clevertap.min.js';
-      var s = document.getElementsByTagName('script')[0];
-      s.parentNode.insertBefore(wzrk, s);
-    })();
-
-    // Show notification permission popup on page load
-    window.addEventListener('load', function() {
-      setTimeout(function() {
-        clevertap.notifications.push({
-          "titleText": "Would you like to receive Push Notifications?",
-          "bodyText": "We promise to only send you relevant content and give you updates on your transactions",
-          "okButtonText": "Sign me up!",
-          "rejectButtonText": "No thanks",
-          "okButtonColor": "#F28046"
-        });
-      }, 2000); // Wait 2 seconds for CleverTap to load
-    });
-  </script>
-  <!-- 🔹 CleverTap Setup Script -->
-
-  <!-- 🔥 Firebase SDK (COMMENTED OUT) -->
-  <!-- <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getMessaging, getToken, onMessage } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js';
-
- const firebaseConfig = {
-  apiKey: "AIzaSyAuzpLmfs_ZeBb1VxHZm_NMww1WEBNjJlo",
-  authDomain: "websitetest-80b38.firebaseapp.com",
-  projectId: "websitetest-80b38",
-  storageBucket: "websitetest-80b38.firebasestorage.app",
-  messagingSenderId: "394462402699",
-  appId: "1:394462402699:web:189c6200695deed0f81c8e",
-  measurementId: "G-4C21T6NF7N"
-};
-
-    const app = initializeApp(firebaseConfig);
-    const messaging = getMessaging(app);
-
-    window.requestNotificationPermission = async function() {
-      try {
-        // Wait for service worker to be ready
-        await navigator.serviceWorker.ready;
-        
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
-          const token = await getToken(messaging, {
-            vapidKey: 'BDj3t_fNSo7iFxolO3xhJwbDNhbUTxeciSzK18xgP0DP1GSqJzJt5D22rjR1CJvCLTEDliIertL01AW-QkgxfVQ',
-            serviceWorkerRegistration: swRegistration
-          });
-          console.log('FCM Token:', token);
-          document.getElementById('token-display').textContent = token;
-        } else {
-          console.log('Permission denied');
-        }
-      } catch (error) {
-        console.error('Error getting token:', error);
-      }
-    };
-
-    onMessage(messaging, (payload) => {
-      console.log('Message received:', payload);
-    });
-  </script> -->
-  <!-- 🔥 Firebase SDK (COMMENTED OUT) -->
-
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -118,42 +39,171 @@
     button:hover {
       background-color: #e6e6e6;
     }
+
+    /* Cookie Consent Banner */
+    #cookieConsent {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.95);
+      color: white;
+      padding: 20px;
+      display: none;
+      z-index: 9999;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+    }
+    #cookieConsent.show {
+      display: block;
+    }
+    .cookie-content {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .cookie-text {
+      flex: 1;
+      text-align: left;
+      font-size: 14px;
+    }
+    .cookie-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    .cookie-buttons button {
+      margin: 0;
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+    #acceptCookies {
+      background-color: #28a745;
+      color: white;
+    }
+    #acceptCookies:hover {
+      background-color: #218838;
+    }
+    #rejectCookies {
+      background-color: #dc3545;
+      color: white;
+    }
+    #rejectCookies:hover {
+      background-color: #c82333;
+    }
   </style>
+
+  <!-- Cookie Helper Functions -->
+  <script>
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    function setCookie(name, value, days) {
+      const d = new Date();
+      d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+      document.cookie = `${name}=${value};expires=${d.toUTCString()};path=/`;
+    }
+
+    const cookieConsent = getCookie('cookieConsent');
+    const shouldInitCleverTap = cookieConsent === 'accepted';
+  </script>
+
+  <!-- 🔹 CleverTap SDK Setup Script (Conditional) -->
+  <script type="text/javascript">
+    function initializeCleverTap() {
+      var clevertap = {event:[], profile:[], account:[], onUserLogin:[], notifications:[], privacy:[]};
+      clevertap.account.push({ "id": "TEST-654-Z9R-646Z" });
+      clevertap.privacy.push({optOut: false});
+      clevertap.privacy.push({useIP: false});
+
+      (function () {
+        var wzrk = document.createElement('script');
+        wzrk.type = 'text/javascript';
+        wzrk.async = true;
+        wzrk.src = (document.location.protocol == 'https:' ? 
+          'https://d2r1yp2w7bby2u.cloudfront.net' : 
+          'http://static.clevertap.com') + '/js/clevertap.min.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(wzrk, s);
+      })();
+
+      window.clevertap = clevertap;
+
+      setTimeout(function() {
+        clevertap.notifications.push({
+          "titleText": "Would you like to receive Push Notifications?",
+          "bodyText": "We promise to only send you relevant content and give you updates on your transactions",
+          "okButtonText": "Sign me up!",
+          "rejectButtonText": "No thanks",
+          "okButtonColor": "#F28046"
+        });
+      }, 2000);
+
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/clevertap_sw.js')
+          .then(function(registration) {
+            console.log('CleverTap Service Worker registered');
+          })
+          .catch(function(error) {
+            console.error('Service Worker registration failed:', error);
+          });
+      }
+    }
+
+    if (shouldInitCleverTap) {
+      window.addEventListener('load', initializeCleverTap);
+    }
+  </script>
 </head>
 <body>
-     <!-- 🔹 Register CleverTap Service Worker -->
-    <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-      navigator.serviceWorker.register('/clevertap_sw.js')
-        .then(function(registration) {
-          console.log('CleverTap Service Worker registered with scope:', registration.scope);
-        })
-        .catch(function(error) {
-          console.error('CleverTap Service Worker registration failed:', error);
-        });
-    });
-  } else {
-    console.warn('Service workers are not supported in this browser.');
-  }
-</script>
-   <!-- 🔹 Register CleverTap Service Worker -->
+  <!-- 🍪 Cookie Consent Banner -->
+  <div id="cookieConsent">
+    <div class="cookie-content">
+      <div class="cookie-text">
+        <strong>🍪 We use cookies</strong><br>
+        This website uses cookies and analytics to improve your experience. By accepting, you agree to our use of CleverTap for analytics and notifications.
+      </div>
+      <div class="cookie-buttons">
+        <button id="acceptCookies">Accept</button>
+        <button id="rejectCookies">Reject</button>
+      </div>
+    </div>
+  </div>
 
   <h1>Hello, I'm Deven 👋</h1>
   <p>Welcome to my CleverTap Website! !</p>
   <p>Visit my <a href="https://github.com/devennazareCT/devennazareCT.github.io.git" target="_blank">GitHub Repo</a></p>
 
-  <!-- 🔘 CleverTap Buttons -->
-  <button onclick='clevertap.event.push("Product viewed");'>
+  <button onclick='if(window.clevertap) clevertap.event.push("Product viewed"); else alert("Please accept cookies first");'>
     Track Product Viewed Event
   </button>
-  
-       <!-- 🔹 Show Permission Popup -->
-<script>
 
-    function invokePopup(){
-      console.log("Function invoked")
-    }
+  <!-- 🍪 Cookie Consent Logic -->
+  <script>
+    window.addEventListener('load', function() {
+      const consent = getCookie('cookieConsent');
+      
+      if (!consent) {
+        document.getElementById('cookieConsent').classList.add('show');
+      }
+
+      document.getElementById('acceptCookies').addEventListener('click', function() {
+        setCookie('cookieConsent', 'accepted', 365);
+        document.getElementById('cookieConsent').classList.remove('show');
+        initializeCleverTap();
+      });
+
+      document.getElementById('rejectCookies').addEventListener('click', function() {
+        setCookie('cookieConsent', 'rejected', 365);
+        document.getElementById('cookieConsent').classList.remove('show');
+        console.log('Cookies rejected - CleverTap will not initialize');
+      });
+    });
   </script>
 
 </body>
