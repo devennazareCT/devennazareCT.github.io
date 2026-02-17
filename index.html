@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,18 +14,22 @@
       text-align: center;
       padding: 100px;
     }
+
     h1 {
       font-size: 48px;
       margin-bottom: 20px;
     }
+
     p {
       font-size: 20px;
       opacity: 0.9;
     }
+
     a {
       color: #fff;
       text-decoration: underline;
     }
+
     button {
       background-color: #fff;
       color: #007BFF;
@@ -36,6 +41,7 @@
       margin-top: 40px;
       transition: all 0.3s;
     }
+
     button:hover {
       background-color: #e6e6e6;
     }
@@ -48,6 +54,7 @@
       max-width: 400px;
       margin: 40px auto;
     }
+
     .form-container input {
       width: 100%;
       padding: 12px;
@@ -57,6 +64,7 @@
       font-size: 16px;
       box-sizing: border-box;
     }
+
     .form-container button {
       width: 100%;
       margin-top: 10px;
@@ -65,20 +73,23 @@
 
   <!-- 🔹 CleverTap SDK Setup Script (On Button Click) -->
   <script type="text/javascript">
-    var isCleverTapInitialized = false;
 
     function initializeCleverTapWithUser(identity, email, name) {
-      if (isCleverTapInitialized) {
-        console.log('CleverTap already initialized');
-        return;
-      }
 
-      var clevertap = {event:[], profile:[], account:[], onUserLogin:[], notifications:[], privacy:[]};
-      clevertap.account.push({ "id": "TEST-654-Z9R-646Z" });
-      clevertap.privacy.push({optOut: false});
-      clevertap.privacy.push({useIP: false});
 
-      // Push user profile immediately
+      var clevertap = { event: [], profile: [], account: [], onUserLogin: [], notifications: [], privacy: [] };
+      // replace with the CLEVERTAP_ACCOUNT_ID with the actual ACCOUNT ID value from your Dashboard -> Settings page
+      clevertap.account.push({ "id": "TEST-654-Z9R-646Z" }, "eu1");
+      clevertap.privacy.push({ optOut: false }); //set the flag to true, if the user of the device opts out of sharing their data
+      clevertap.privacy.push({ useIP: false }); //set the flag to true, if the user agrees to share their IP data
+      (function () {
+        var wzrk = document.createElement('script');
+        wzrk.type = 'text/javascript';
+        wzrk.async = true;
+        wzrk.src = ('https:' == document.location.protocol ? 'https://d2r1yp2w7bby2u.cloudfront.net' : 'http://static.clevertap.com') + '/js/clevertap.min.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(wzrk, s);
+      })();
       clevertap.onUserLogin.push({
         "Site": {
           "Identity": identity,
@@ -87,31 +98,8 @@
         }
       });
 
-      (function () {
-        var wzrk = document.createElement('script');
-        wzrk.type = 'text/javascript';
-        wzrk.async = true;
-        wzrk.src = (document.location.protocol == 'https:' ? 
-          'https://d2r1yp2w7bby2u.cloudfront.net' : 
-          'http://static.clevertap.com') + '/js/clevertap.min.js';
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(wzrk, s);
-      })();
 
-      console.log('CleverTap initialized with user:', {identity, email, name});
 
-      window.clevertap = clevertap;
-      isCleverTapInitialized = true;
-
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/clevertap_sw.js')
-          .then(function(registration) {
-            console.log('CleverTap Service Worker registered');
-          })
-          .catch(function(error) {
-            console.error('Service Worker registration failed:', error);
-          });
-      }
     }
 
     function handleFormSubmit() {
@@ -129,9 +117,10 @@
     }
   </script>
 </head>
+
 <body>
 
-  <h1>Hello, I'm Deven 👋</h1>
+  <h1>Hello</h1>
   <p>Welcome to my CleverTap Website! !</p>
   <p>Visit my <a href="https://github.com/devennazareCT/devennazareCT.github.io.git" target="_blank">GitHub Repo</a></p>
 
@@ -144,9 +133,11 @@
     <button onclick="handleFormSubmit()">Initialize & Login</button>
   </div>
 
-  <button onclick='if(window.clevertap) clevertap.event.push("Product viewed"); else alert("Please initialize CleverTap first");'>
+  <button
+    onclick='if(window.clevertap) clevertap.event.push("Product viewed"); else alert("Please initialize CleverTap first");'>
     Track Product Viewed Event
   </button>
 
 </body>
+
 </html>
