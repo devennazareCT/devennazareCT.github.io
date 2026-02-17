@@ -40,86 +40,52 @@
       background-color: #e6e6e6;
     }
 
-    /* Cookie Consent Banner */
-    #cookieConsent {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(0, 0, 0, 0.95);
-      color: white;
-      padding: 20px;
-      display: none;
-      z-index: 9999;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+    /* Form Styles */
+    .form-container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 400px;
+      margin: 40px auto;
     }
-    #cookieConsent.show {
-      display: block;
+    .form-container input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
     }
-    .cookie-content {
-      max-width: 1000px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-    .cookie-text {
-      flex: 1;
-      text-align: left;
-      font-size: 14px;
-    }
-    .cookie-buttons {
-      display: flex;
-      gap: 10px;
-    }
-    .cookie-buttons button {
-      margin: 0;
-      padding: 10px 20px;
-      font-size: 14px;
-    }
-    #acceptCookies {
-      background-color: #28a745;
-      color: white;
-    }
-    #acceptCookies:hover {
-      background-color: #218838;
-    }
-    #rejectCookies {
-      background-color: #dc3545;
-      color: white;
-    }
-    #rejectCookies:hover {
-      background-color: #c82333;
+    .form-container button {
+      width: 100%;
+      margin-top: 10px;
     }
   </style>
 
-  <!-- Cookie Helper Functions -->
-  <script>
-    function getCookie(name) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
-    }
-
-    function setCookie(name, value, days) {
-      const d = new Date();
-      d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
-      document.cookie = `${name}=${value};expires=${d.toUTCString()};path=/`;
-    }
-
-    const cookieConsent = getCookie('cookieConsent');
-    const shouldInitCleverTap = cookieConsent === 'accepted';
-  </script>
-
-  <!-- 🔹 CleverTap SDK Setup Script (Conditional) -->
+  <!-- 🔹 CleverTap SDK Setup Script (On Button Click) -->
   <script type="text/javascript">
-    function initializeCleverTap() {
+    var isCleverTapInitialized = false;
+
+    function initializeCleverTapWithUser(identity, email, name) {
+      if (isCleverTapInitialized) {
+        console.log('CleverTap already initialized');
+        return;
+      }
+
       var clevertap = {event:[], profile:[], account:[], onUserLogin:[], notifications:[], privacy:[]};
       clevertap.account.push({ "id": "TEST-654-Z9R-646Z" });
       clevertap.privacy.push({optOut: false});
       clevertap.privacy.push({useIP: false});
+
+      // Push user profile immediately
+      clevertap.onUserLogin.push({
+        "Site": {
+          "Identity": identity,
+          "Email": email,
+          "Name": name
+        }
+      });
 
       (function () {
         var wzrk = document.createElement('script');
@@ -132,17 +98,10 @@
         s.parentNode.insertBefore(wzrk, s);
       })();
 
-      window.clevertap = clevertap;
+      console.log('CleverTap initialized with user:', {identity, email, name});
 
-      setTimeout(function() {
-        clevertap.notifications.push({
-          "titleText": "Would you like to receive Push Notifications?",
-          "bodyText": "We promise to only send you relevant content and give you updates on your transactions",
-          "okButtonText": "Sign me up!",
-          "rejectButtonText": "No thanks",
-          "okButtonColor": "#F28046"
-        });
-      }, 2000);
+      window.clevertap = clevertap;
+      isCleverTapInitialized = true;
 
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/clevertap_sw.js')
@@ -155,56 +114,39 @@
       }
     }
 
-    if (shouldInitCleverTap) {
-      window.addEventListener('load', initializeCleverTap);
+    function handleFormSubmit() {
+      const identity = document.getElementById('identity').value;
+      const email = document.getElementById('email').value;
+      const name = document.getElementById('name').value;
+
+      if (!identity || !email || !name) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      initializeCleverTapWithUser(identity, email, name);
+      alert('CleverTap initialized successfully!');
     }
   </script>
 </head>
 <body>
-  <!-- 🍪 Cookie Consent Banner -->
-  <div id="cookieConsent">
-    <div class="cookie-content">
-      <div class="cookie-text">
-        <strong>🍪 We use cookies</strong><br>
-        This website uses cookies and analytics to improve your experience. By accepting, you agree to our use of CleverTap for analytics and notifications.
-      </div>
-      <div class="cookie-buttons">
-        <button id="acceptCookies">Accept</button>
-        <button id="rejectCookies">Reject</button>
-      </div>
-    </div>
-  </div>
 
   <h1>Hello, I'm Deven 👋</h1>
   <p>Welcome to my CleverTap Website! !</p>
   <p>Visit my <a href="https://github.com/devennazareCT/devennazareCT.github.io.git" target="_blank">GitHub Repo</a></p>
 
-  <button onclick='if(window.clevertap) clevertap.event.push("Product viewed"); else alert("Please accept cookies first");'>
+  <!-- User Form -->
+  <div class="form-container">
+    <h2 style="margin-top: 0;">Initialize CleverTap</h2>
+    <input type="text" id="identity" placeholder="Identity (e.g., user123)" />
+    <input type="email" id="email" placeholder="Email" />
+    <input type="text" id="name" placeholder="Name" />
+    <button onclick="handleFormSubmit()">Initialize & Login</button>
+  </div>
+
+  <button onclick='if(window.clevertap) clevertap.event.push("Product viewed"); else alert("Please initialize CleverTap first");'>
     Track Product Viewed Event
   </button>
-
-  <!-- 🍪 Cookie Consent Logic -->
-  <script>
-    window.addEventListener('load', function() {
-      const consent = getCookie('cookieConsent');
-      
-      if (!consent) {
-        document.getElementById('cookieConsent').classList.add('show');
-      }
-
-      document.getElementById('acceptCookies').addEventListener('click', function() {
-        setCookie('cookieConsent', 'accepted', 365);
-        document.getElementById('cookieConsent').classList.remove('show');
-        initializeCleverTap();
-      });
-
-      document.getElementById('rejectCookies').addEventListener('click', function() {
-        setCookie('cookieConsent', 'rejected', 365);
-        document.getElementById('cookieConsent').classList.remove('show');
-        console.log('Cookies rejected - CleverTap will not initialize');
-      });
-    });
-  </script>
 
 </body>
 </html>
