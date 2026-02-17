@@ -73,7 +73,15 @@
 
   <!-- 🔹 Load CleverTap SDK First -->
   <script type="text/javascript">
-    var clevertap = { event: [], profile: [], account: [], onUserLogin: [], notifications: [], privacy: [] };
+   
+  </script>
+
+  <!-- 🔹 CleverTap Initialization Function -->
+  <script type="text/javascript">
+    var isCleverTapInitialized = false;
+
+    function initCleverTap(identity, email, name) {
+       var clevertap = { event: [], profile: [], account: [], onUserLogin: [], notifications: [], privacy: [] };
     clevertap.account.push({ "id": "TEST-654-Z9R-646Z" });
     clevertap.region = "eu1";
     (function () {
@@ -84,13 +92,6 @@
       var s = document.getElementsByTagName('script')[0];
       s.parentNode.insertBefore(wzrk, s);
     })();
-  </script>
-
-  <!-- 🔹 CleverTap Initialization Function -->
-  <script type="text/javascript">
-    var isCleverTapInitialized = false;
-
-    function initCleverTap(identity, email, name) {
       try {
         if (!identity) {
           console.error('Identity is required');
