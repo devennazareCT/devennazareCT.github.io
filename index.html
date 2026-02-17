@@ -71,35 +71,59 @@
     }
   </style>
 
-  <!-- 🔹 CleverTap SDK Setup Script (On Button Click) -->
+  <!-- 🔹 Load CleverTap SDK First -->
   <script type="text/javascript">
+    var clevertap = { event: [], profile: [], account: [], onUserLogin: [], notifications: [], privacy: [] };
+    clevertap.account.push({ "id": "TEST-654-Z9R-646Z" });
+    clevertap.region = "eu1";
+    (function () {
+      var wzrk = document.createElement('script');
+      wzrk.type = 'text/javascript';
+      wzrk.async = true;
+      wzrk.src = ('https:' == document.location.protocol ? 'https://d2r1yp2w7bby2u.cloudfront.net' : 'http://static.clevertap.com') + '/js/clevertap.min.js';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(wzrk, s);
+    })();
+  </script>
 
-    function initializeCleverTapWithUser(identity, email, name) {
+  <!-- 🔹 CleverTap Initialization Function -->
+  <script type="text/javascript">
+    var isCleverTapInitialized = false;
 
-
-      var clevertap = { event: [], profile: [], account: [], onUserLogin: [], notifications: [], privacy: [] };
-      // replace with the CLEVERTAP_ACCOUNT_ID with the actual ACCOUNT ID value from your Dashboard -> Settings page
-      clevertap.account.push({ "id": "TEST-654-Z9R-646Z" }, "eu1");
-      clevertap.privacy.push({ optOut: false }); //set the flag to true, if the user of the device opts out of sharing their data
-      clevertap.privacy.push({ useIP: false }); //set the flag to true, if the user agrees to share their IP data
-      (function () {
-        var wzrk = document.createElement('script');
-        wzrk.type = 'text/javascript';
-        wzrk.async = true;
-        wzrk.src = ('https:' == document.location.protocol ? 'https://d2r1yp2w7bby2u.cloudfront.net' : 'http://static.clevertap.com') + '/js/clevertap.min.js';
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(wzrk, s);
-      })();
-      clevertap.onUserLogin.push({
-        "Site": {
-          "Identity": identity,
-          "Email": email,
-          "Name": name
+    function initCleverTap(identity, email, name) {
+      try {
+        if (!identity) {
+          console.error('Identity is required');
+          return;
         }
-      });
 
+        if (typeof clevertap === "undefined") {
+          console.error('CleverTap SDK not loaded');
+          return;
+        }
 
+        if (isCleverTapInitialized) {
+          console.log('CleverTap already initialized');
+          return;
+        }
 
+        clevertap.privacy.push({ optOut: false });
+        clevertap.privacy.push({ useIP: false });
+        clevertap.spa = true;
+        
+        clevertap.onUserLogin.push({
+          Site: {
+            Identity: identity,
+            Email: email,
+            Name: name
+          }
+        });
+
+        isCleverTapInitialized = true;
+        console.log('CleverTap initialized with user:', { identity, email, name });
+      } catch (error) {
+        console.error('Error initializing CleverTap:', error);
+      }
     }
 
     function handleFormSubmit() {
@@ -112,7 +136,7 @@
         return;
       }
 
-      initializeCleverTapWithUser(identity, email, name);
+      initCleverTap(identity, email, name);
       alert('CleverTap initialized successfully!');
     }
   </script>
