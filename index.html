@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,22 +13,18 @@
       text-align: center;
       padding: 100px;
     }
-
     h1 {
       font-size: 48px;
       margin-bottom: 20px;
     }
-
     p {
       font-size: 20px;
       opacity: 0.9;
     }
-
     a {
       color: #fff;
       text-decoration: underline;
     }
-
     button {
       background-color: #fff;
       color: #007BFF;
@@ -41,12 +36,9 @@
       margin-top: 40px;
       transition: all 0.3s;
     }
-
     button:hover {
       background-color: #e6e6e6;
     }
-
-    /* Form Styles */
     .form-container {
       background: rgba(255, 255, 255, 0.1);
       padding: 30px;
@@ -54,7 +46,6 @@
       max-width: 400px;
       margin: 40px auto;
     }
-
     .form-container input {
       width: 100%;
       padding: 12px;
@@ -64,26 +55,21 @@
       font-size: 16px;
       box-sizing: border-box;
     }
-
     .form-container button {
       width: 100%;
       margin-top: 10px;
     }
   </style>
 
-  <!-- 🔹 Load CleverTap SDK First -->
+  <!-- 🔹 Initialize CleverTap SDK on Page Load -->
   <script type="text/javascript">
-   
-  </script>
-
-  <!-- 🔹 CleverTap Initialization Function -->
-  <script type="text/javascript">
-    var isCleverTapInitialized = false;
-
-    function initCleverTap(identity, email, name) {
-       var clevertap = { event: [], profile: [], account: [], onUserLogin: [], notifications: [], privacy: [] };
+    var clevertap = { event: [], profile: [], account: [], onUserLogin: [], notifications: [], privacy: [] };
     clevertap.account.push({ "id": "TEST-654-Z9R-646Z" });
     clevertap.region = "eu1";
+    clevertap.privacy.push({ optOut: false });
+    clevertap.privacy.push({ useIP: false });
+    clevertap.spa = true;
+
     (function () {
       var wzrk = document.createElement('script');
       wzrk.type = 'text/javascript';
@@ -92,42 +78,13 @@
       var s = document.getElementsByTagName('script')[0];
       s.parentNode.insertBefore(wzrk, s);
     })();
-      try {
-        if (!identity) {
-          console.error('Identity is required');
-          return;
-        }
 
-        if (typeof clevertap === "undefined") {
-          console.error('CleverTap SDK not loaded');
-          return;
-        }
+    window.clevertap = clevertap;
+  </script>
 
-        if (isCleverTapInitialized) {
-          console.log('CleverTap already initialized');
-          return;
-        }
-
-        clevertap.privacy.push({ optOut: false });
-        clevertap.privacy.push({ useIP: false });
-        clevertap.spa = true;
-        
-        clevertap.onUserLogin.push({
-          Site: {
-            Identity: identity,
-            Email: email,
-            Name: name
-          }
-        });
-
-        isCleverTapInitialized = true;
-        console.log('CleverTap initialized with user:', { identity, email, name });
-      } catch (error) {
-        console.error('Error initializing CleverTap:', error);
-      }
-    }
-
-    function handleFormSubmit() {
+  <!-- 🔹 User Login Function -->
+  <script type="text/javascript">
+    function handleUserLogin() {
       const identity = document.getElementById('identity').value;
       const email = document.getElementById('email').value;
       const name = document.getElementById('name').value;
@@ -137,32 +94,37 @@
         return;
       }
 
-      initCleverTap(identity, email, name);
-      alert('CleverTap initialized successfully!');
+      clevertap.onUserLogin.push({
+        Site: {
+          Identity: identity,
+          Email: email,
+          Name: name
+        }
+      });
+
+      console.log('User logged in:', { identity, email, name });
+      alert('User logged in successfully!');
     }
   </script>
 </head>
 
 <body>
-
   <h1>Hello</h1>
-  <p>Welcome to my CleverTap Website! !</p>
+  <p>Welcome to my CleverTap Website!</p>
   <p>Visit my <a href="https://github.com/devennazareCT/devennazareCT.github.io.git" target="_blank">GitHub Repo</a></p>
 
   <!-- User Form -->
   <div class="form-container">
-    <h2 style="margin-top: 0;">Initialize CleverTap</h2>
+    <h2 style="margin-top: 0;">User Login</h2>
     <input type="text" id="identity" placeholder="Identity (e.g., user123)" />
     <input type="email" id="email" placeholder="Email" />
     <input type="text" id="name" placeholder="Name" />
-    <button onclick="handleFormSubmit()">Initialize & Login</button>
+    <button onclick="handleUserLogin()">Login</button>
   </div>
 
-  <button
-    onclick='if(window.clevertap) clevertap.event.push("Product viewed"); else alert("Please initialize CleverTap first");'>
+  <button onclick='if(window.clevertap) clevertap.event.push("Product viewed"); else alert("Please initialize CleverTap first");'>
     Track Product Viewed Event
   </button>
 
 </body>
-
 </html>
