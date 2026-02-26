@@ -101,7 +101,13 @@
           Name: name
         }
       });
-
+clevertap.onUserLogin.push({
+        Site: {
+          Identity: identity,
+          Email: email,
+          Name: name
+        }
+      });
       console.log('User logged in:', { identity, email, name });
       alert('User logged in successfully!');
     }
