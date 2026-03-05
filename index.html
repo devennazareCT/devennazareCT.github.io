@@ -63,8 +63,10 @@
 
   <!-- 🔹 Initialize CleverTap SDK on Page Load -->
   <script type="text/javascript">
-    var clevertap = { event: [], profile: [], account: [], onUserLogin: [], notifications: [], privacy: [] };
-    clevertap.account.push({ "id": "TEST-654-Z9R-646Z" });
+    var clevertap = { event: [], profile: [], account: [], onUserLogin: [], notifications: [], privacy: [], config: {
+      customId: "testlemonswan",
+    }, };
+    clevertap.account.push({ "id": "TEST-654-Z9R-646Z" ,});
     clevertap.region = "eu1";
     clevertap.privacy.push({ optOut: false });
     clevertap.privacy.push({ useIP: false });
@@ -94,18 +96,13 @@
         return;
       }
 
-      clevertap.onUserLogin.push({
-        Site: {
-          Identity: identity,
-          Email: email,
-          Name: name
-        }
-      });
+     
 clevertap.onUserLogin.push({
         Site: {
           Identity: identity,
           Email: email,
-          Name: name
+          Name: name,
+          customId:identity
         }
       });
       console.log('User logged in:', { identity, email, name });
