@@ -100,7 +100,7 @@ clevertap.onUserLogin.push({
           Identity: identity,
           Email: email,
           Name: name,
-          customId: 'osmtest124351',
+          customId:identity,
         }
       });
       console.log('User logged in:', { identity, email, name });
@@ -124,11 +124,11 @@ clevertap.onUserLogin.push({
   </div>
 
   <button onclick='if(window.clevertap) clevertap.event.push("Product viewed"); else alert("Please initialize CleverTap first");'>
-    Track Product Viewed Event !
+    Track Product Viewed
   </button>
 
   <button onclick='clevertap.notifications.push({"titleText":"Would you like to receive Push Notifications?","bodyText":"We promise to only send you relevant content and give you updates on your transactions","okButtonText":"Sign me up!","rejectButtonText":"No thanks","okButtonColor":"#F28046"});'>
-    Enable Push Notifications !
+    Enable Push Notifications
   </button>
 
 </body>
