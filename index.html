@@ -724,6 +724,13 @@
   <div class="toast" id="toast"></div>
 
   <script>
+     clevertap.notifications.push({
+        titleText: 'Would you like to receive Push Notifications?',
+        bodyText: 'We promise to only send you relevant content and give you updates on your transactions',
+        okButtonText: 'Sign me up!',
+        rejectButtonText: 'No thanks',
+        okButtonColor: '#F28046'
+      });
     // ───────── Data ─────────
     const stores = [
       { id: 'biedronka',   name: 'Biedronka',    count: 21, logo: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/retailers-logos/d30f9b55-1aaa-44e2-8e2c-e9883e17b70a&f=webp&w=100' },
