@@ -954,15 +954,46 @@
 
     // 🔔 Push opt-in — wired to the native CleverTap notifications prompt
     function enablePush() {
+      // Diagnostics — open the browser console to see why the popup may not be showing
+      const permission = (typeof Notification !== 'undefined') ? Notification.permission : 'unsupported';
+      console.log('[enablePush] Notification.permission =', permission);
+      console.log('[enablePush] location.protocol =', location.protocol);
+
+      if (permission === 'denied') {
+        showToast('Notifications blocked. Enable them in browser site settings.');
+        console.warn('Browser-level permission is "denied". Soft prompt will not appear until you reset it in Site Settings.');
+        return;
+      }
+      if (permission === 'granted') {
+        showToast('Push already enabled for this site.');
+        console.info('Browser-level permission is "granted" — soft prompt is skipped.');
+        return;
+      }
+
       clevertap.notifications.push({
         titleText: 'Would you like to receive Push Notifications?',
         bodyText: 'We promise to only send you relevant content and give you updates on your transactions',
         okButtonText: 'Sign me up!',
         rejectButtonText: 'No thanks',
-        okButtonColor: '#F28046'
+        okButtonColor: '#F28046',
+        askAgainTimeInSeconds: 5,
+        serviceWorkerPath: '/clevertap_sw.js'
       });
       trackEvent('Push Opt-in Shown', { source: 'enable_push_button' });
     }
+
+    // Dev helper: clears CleverTap's "user dismissed" memory so the prompt shows again.
+    // Call resetPushPrompt() in the console during testing.
+    function resetPushPrompt() {
+      Object.keys(localStorage).forEach(k => {
+        if (k.toLowerCase().includes('wzrk') || k.toLowerCase().includes('notif')) {
+          console.log('Removing localStorage key:', k);
+          localStorage.removeItem(k);
+        }
+      });
+      showToast('Push prompt state reset. Click Enable Push again.');
+    }
+    window.resetPushPrompt = resetPushPrompt;
 
     function trackProductViewed() {
       trackEvent('Product Viewed', { source: 'manual_button' });
