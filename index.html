@@ -1064,11 +1064,27 @@
       source: 'default'
     };
 
+    // Holds the payload if it arrives before the DOM is ready (e.g. Visual Editor builder mode).
+    let pendingHeroContent = null;
+
     function applyHomeBanner(content) {
       if (!content) return;
-      if (content.title)       document.getElementById('heroTitle').textContent = content.title;
-      if (content.body)        document.getElementById('heroBody').textContent  = content.body;
-      if (content.button_text) document.getElementById('heroCta').textContent   = content.button_text + ' →';
+
+      const titleEl = document.getElementById('heroTitle');
+      const bodyEl  = document.getElementById('heroBody');
+      const ctaEl   = document.getElementById('heroCta');
+
+      // If the hero hasn't rendered yet (e.g. SDK fired CT_web_native_display before DOMContentLoaded),
+      // stash the payload and re-apply once the DOM is ready.
+      if (!titleEl || !bodyEl || !ctaEl) {
+        pendingHeroContent = content;
+        console.log('[applyHomeBanner] Hero not in DOM yet — payload queued for replay after DOMContentLoaded.');
+        return;
+      }
+
+      if (content.title)       titleEl.textContent = content.title;
+      if (content.body)        bodyEl.textContent  = content.body;
+      if (content.button_text) ctaEl.textContent   = content.button_text + ' →';
 
       heroState = {
         topic: 'home_page_banner',
@@ -1127,6 +1143,15 @@
     document.addEventListener('DOMContentLoaded', () => {
       renderStores();
       renderLeaflets();
+
+      // If a CT_web_native_display payload arrived before the hero existed, replay it now.
+      if (pendingHeroContent) {
+        console.log('[boot] Replaying queued hero payload.');
+        const queued = pendingHeroContent;
+        pendingHeroContent = null;
+        applyHomeBanner(queued);
+      }
+
       trackEvent('Page Viewed', {
         page_name: 'Home',
         store_count: stores.length,
