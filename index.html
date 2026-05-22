@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DealPop – Discover Deals & Catalogues</title>
 
+  <!--
+    🔹 CleverTap Visual Editor prerequisites
+    Visual Editor support requires Web SDK v1.13.1+ and these security headers.
+    NOTE: `frame-ancestors` is ignored when set via <meta> per the CSP spec — for
+    production, set the headers below as HTTP response headers on your web server
+    or CDN. GitHub Pages cannot serve custom headers, so on github.io the meta
+    fallbacks are best-effort only.
+  -->
+  <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self' https://*.clevertap.com https://*.clevertap-prod.com">
+  <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin-allow-popups">
+  <meta http-equiv="Cross-Origin-Embedder-Policy" content="unsafe-none">
+
   <style>
     :root {
       --primary: #6366F1;
@@ -1120,6 +1132,19 @@
         store_count: stores.length,
         leaflet_count: leaflets.length
       });
+
+      // Visual Editor: confirm Web SDK version is >= 1.13.1
+      function logSDKVersion(attempt = 0) {
+        if (window.clevertap && typeof window.clevertap.getSDKVersion === 'function') {
+          const v = window.clevertap.getSDKVersion();
+          console.log('[CleverTap] Web SDK version:', v, '(Visual Editor needs >= 1.13.1)');
+        } else if (attempt < 20) {
+          setTimeout(() => logSDKVersion(attempt + 1), 250);
+        } else {
+          console.warn('[CleverTap] getSDKVersion not available — SDK may not have loaded.');
+        }
+      }
+      logSDKVersion();
     });
   </script>
 </body>
