@@ -566,7 +566,7 @@
   <!-- CleverTap SDK -->
   <script type="text/javascript">
     var clevertap = { event: [], profile: [], account: [], onUserLogin: [], notifications: [], privacy: []};
-    clevertap.account.push({ "id": "TEST-654-Z9R-646Z" });
+    clevertap.account.push({ "id": "654-Z9R-646Z" });
     clevertap.region = "eu1";
     clevertap.privacy.push({ optOut: false });
     clevertap.privacy.push({ useIP: false });
@@ -616,12 +616,12 @@
   <!-- HOME VIEW -->
   <div class="container" id="homeView">
 
-    <div class="hero">
+    <div class="hero" id="heroBanner">
       <div>
-        <h1>Today's best deals, all in one place</h1>
-        <p>Browse the latest catalogues from your favourite stores. Save offers, share with friends, never miss a price drop.</p>
+        <h1 id="heroTitle">Today's best deals, all in one place</h1>
+        <p id="heroBody">Browse the latest catalogues from your favourite stores. Save offers, share with friends, never miss a price drop.</p>
       </div>
-      <button class="hero-cta" onclick="trackEvent('Hero CTA Clicked', { cta: 'Explore Deals' }); document.getElementById('leafletsGrid').scrollIntoView({behavior:'smooth'});">Explore Deals →</button>
+      <button class="hero-cta" id="heroCta" onclick="onHeroCtaClick()">Explore Deals →</button>
     </div>
 
     <div class="section-head">
@@ -999,6 +999,73 @@
       trackEvent('Product Viewed', { source: 'manual_button' });
       showToast('Product Viewed event fired');
     }
+
+    // ───────── Hero banner (driven by CleverTap Native Display) ─────────
+    // Default state — overwritten if a CT_web_native_display payload arrives.
+    let heroState = {
+      topic: 'home_page_banner',
+      title: "Today's best deals, all in one place",
+      body: "Browse the latest catalogues from your favourite stores. Save offers, share with friends, never miss a price drop.",
+      button_text: "Explore Deals",
+      source: 'default'
+    };
+
+    function applyHomeBanner(content) {
+      if (!content) return;
+      if (content.title)       document.getElementById('heroTitle').textContent = content.title;
+      if (content.body)        document.getElementById('heroBody').textContent  = content.body;
+      if (content.button_text) document.getElementById('heroCta').textContent   = content.button_text + ' →';
+
+      heroState = {
+        topic: 'home_page_banner',
+        title: content.title || heroState.title,
+        body: content.body || heroState.body,
+        button_text: content.button_text || heroState.button_text,
+        source: 'clevertap_native_display'
+      };
+
+      trackEvent('Native Display Rendered', {
+        topic: 'home_page_banner',
+        title: heroState.title,
+        button_text: heroState.button_text
+      });
+    }
+
+    function onHeroCtaClick() {
+      trackEvent('Hero CTA Clicked', {
+        cta: heroState.button_text,
+        topic: heroState.topic,
+        title: heroState.title,
+        source: heroState.source
+      });
+      document.getElementById('leafletsGrid').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // 🔹 CleverTap Web Native Display listener — fires when the SDK delivers a campaign payload.
+    // The dashboard payload for the home banner uses topic = "home_page_banner" with title/body/button_text keys.
+    document.addEventListener("CT_web_native_display", function(event) {
+      console.log('[CT_web_native_display] full event:', event);
+      console.log('[CT_web_native_display] event.detail payload:', event.detail);
+
+      try {
+        let payloads = event.detail;
+        if (!payloads) return;
+        if (!Array.isArray(payloads)) payloads = [payloads];
+
+        payloads.forEach((p, idx) => {
+          // Payload shape from CleverTap can be { msgContent: {...} }, { kv: {...} } or the kv pairs at the top level.
+          const content = (p && (p.msgContent || p.kv)) || p || {};
+          console.log(`[CT_web_native_display] payload[${idx}] resolved content:`, content);
+
+          const topic = content.topic || (p && p.topic);
+          if (topic === 'home_page_banner') {
+            applyHomeBanner(content);
+          }
+        });
+      } catch (e) {
+        console.warn('Failed to process CT_web_native_display payload', e);
+      }
+    });
 
     // ───────── Boot ─────────
     document.addEventListener('DOMContentLoaded', () => {
