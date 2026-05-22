@@ -3,68 +3,570 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome to My Website</title>
+  <title>DealPop – Discover Deals & Catalogues</title>
 
   <style>
+    :root {
+      --primary: #6366F1;
+      --primary-dark: #4F46E5;
+      --primary-soft: #EEF2FF;
+      --accent: #F43F5E;
+      --accent-soft: #FFE4E6;
+      --text: #0F172A;
+      --muted: #64748B;
+      --bg: #F8FAFC;
+      --card: #FFFFFF;
+      --border: #E2E8F0;
+      --success: #10B981;
+      --success-soft: #ECFDF5;
+      --warning: #F59E0B;
+      --warning-soft: #FEF3C7;
+    }
+    * { box-sizing: border-box; }
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(120deg, #007BFF, #00C6FF);
-      color: white;
-      text-align: center;
-      padding: 100px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
     }
-    h1 {
-      font-size: 48px;
-      margin-bottom: 20px;
-    }
-    p {
-      font-size: 20px;
-      opacity: 0.9;
-    }
-    a {
+
+    /* Top promo bar */
+    .promo-bar {
+      background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
       color: #fff;
-      text-decoration: underline;
-    }
-    button {
-      background-color: #fff;
-      color: #007BFF;
-      border: none;
-      padding: 15px 30px;
-      font-size: 18px;
-      border-radius: 10px;
+      text-align: center;
+      padding: 12px 16px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      font-size: 14px;
       cursor: pointer;
-      margin-top: 40px;
-      transition: all 0.3s;
     }
-    button:hover {
-      background-color: #e6e6e6;
+    .promo-bar span { font-weight: 800; }
+
+    /* Header */
+    .header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
     }
-    .form-container {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 30px;
-      border-radius: 15px;
-      max-width: 400px;
-      margin: 40px auto;
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      cursor: pointer;
     }
-    .form-container input {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 8px;
+    .logo-mark {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       font-size: 16px;
-      box-sizing: border-box;
+      font-weight: 800;
     }
-    .form-container button {
+    .nav {
+      display: flex;
+      gap: 6px;
+      margin-left: 12px;
+    }
+    .nav-item {
+      padding: 8px 14px;
+      cursor: pointer;
+      font-size: 15px;
+      color: var(--muted);
+      border-radius: 8px;
+      font-weight: 500;
+    }
+    .nav-item:hover { background: var(--primary-soft); color: var(--primary); }
+    .search {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 16px;
+      gap: 10px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+    .search input {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      font-size: 15px;
+      outline: none;
+      color: var(--text);
+    }
+    .location {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 15px;
+      cursor: pointer;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .push-btn {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border: 0;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .push-btn:hover { background: #E0E7FF; }
+    .app-btn {
+      background: var(--text);
+      color: #fff;
+      border: 0;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .app-btn:hover { background: #1E293B; }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 28px 60px;
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, var(--primary) 0%, #8B5CF6 60%, var(--accent) 100%);
+      color: #fff;
+      padding: 36px 36px;
+      border-radius: 20px;
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      box-shadow: 0 10px 40px rgba(99,102,241,0.25);
+    }
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      font-weight: 800;
+    }
+    .hero p {
+      margin: 0;
+      opacity: 0.92;
+      font-size: 15px;
+    }
+    .hero-cta {
+      background: #fff;
+      color: var(--primary);
+      border: 0;
+      padding: 12px 22px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 15px;
+      white-space: nowrap;
+    }
+
+    /* Section heading */
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin: 32px 0 18px;
+    }
+    .section-head h2 {
+      font-size: 22px;
+      margin: 0;
+      font-weight: 800;
+    }
+    .pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--text);
+    }
+    .pill-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* Stores grid */
+    .stores {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 12px;
+    }
+    .store-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 8px 12px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+    }
+    .store-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(15,23,42,0.08);
+      border-color: var(--primary);
+    }
+    .store-card img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      border-radius: 10px;
+    }
+    .store-card .count {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .heart {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      color: #CBD5E1;
+      font-size: 18px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .heart.active { color: var(--accent); }
+    .store-card.all {
+      background: var(--primary-soft);
+      border-color: transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .store-card.all .all-icon {
+      width: 60px; height: 60px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+    }
+    .store-card.all .count {
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    /* Leaflets grid */
+    .leaflets {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+    }
+    .leaflet {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      display: flex;
+      flex-direction: column;
+    }
+    .leaflet:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 32px rgba(15,23,42,0.1);
+    }
+    .badge {
+      text-align: center;
+      padding: 8px;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    .badge.ending { background: var(--accent-soft); color: var(--accent); }
+    .badge.current { background: var(--success-soft); color: var(--success); }
+    .badge.future  { background: var(--warning-soft); color: var(--warning); }
+
+    .leaflet-cover {
       width: 100%;
-      margin-top: 10px;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      display: block;
+      background: var(--bg);
+    }
+    .leaflet-meta {
+      padding: 14px 16px 18px;
+    }
+    .leaflet-meta h3 {
+      margin: 0 0 4px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .leaflet-meta p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* Detail view */
+    .detail-view {
+      display: none;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px 28px 60px;
+    }
+    .detail-view.show { display: block; }
+    .back-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 16px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text);
+    }
+    .back-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 36px;
+    }
+    .detail-cover {
+      width: 100%;
+      border-radius: 18px;
+      box-shadow: 0 14px 40px rgba(15,23,42,0.15);
+    }
+    .detail-info h1 {
+      font-size: 30px;
+      margin: 12px 0 8px;
+      font-weight: 800;
+    }
+    .detail-store {
+      color: var(--primary);
+      background: var(--primary-soft);
+      display: inline-block;
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    .detail-validity {
+      color: var(--muted);
+      margin: 8px 0 22px;
+      font-size: 14px;
+    }
+    .detail-validity strong {
+      color: var(--success);
+      font-weight: 700;
+    }
+    .detail-actions {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+    .detail-actions button {
+      padding: 11px 20px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .detail-actions button:hover { border-color: var(--primary); color: var(--primary); }
+    .detail-actions button.primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .detail-actions button.primary:hover { background: var(--primary-dark); color: #fff; }
+    .detail-products h3 {
+      margin: 24px 0 12px;
+      font-size: 17px;
+    }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .product-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      gap: 12px;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+      align-items: center;
+    }
+    .product-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+    .product-card img {
+      width: 70px;
+      height: 70px;
+      object-fit: contain;
+      background: var(--bg);
+      border-radius: 10px;
+    }
+    .product-card .pname { font-weight: 600; font-size: 14px; }
+    .product-card .pprice { color: var(--accent); font-weight: 800; margin-top: 4px; font-size: 16px; }
+
+    /* Store detail */
+    .store-detail-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: var(--card);
+      padding: 24px;
+      border-radius: 16px;
+      margin-bottom: 28px;
+      border: 1px solid var(--border);
+    }
+    .store-detail-header img {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      border-radius: 14px;
+      background: var(--bg);
+      padding: 8px;
+    }
+    .store-detail-header h1 { margin: 0; font-size: 26px; font-weight: 800; }
+    .store-detail-header p { margin: 4px 0 0; color: var(--muted); }
+
+    /* Login FAB + Modal */
+    .login-fab {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      padding: 14px 22px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+      z-index: 99;
+      box-shadow: 0 8px 20px rgba(99,102,241,0.35);
+    }
+    .modal-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.55);
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+    }
+    .modal-bg.show { display: flex; }
+    .modal {
+      background: var(--card);
+      width: 380px;
+      padding: 28px;
+      border-radius: 18px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+    .modal h2 { margin-top: 0; font-weight: 800; }
+    .modal input {
+      width: 100%;
+      padding: 12px 14px;
+      margin: 6px 0;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+    }
+    .modal input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .modal-actions button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: 0;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-secondary { background: var(--bg); color: var(--text); }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text);
+      color: #fff;
+      padding: 11px 22px;
+      border-radius: 999px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 300;
+      font-weight: 500;
+    }
+    .toast.show { opacity: 1; }
+
+    @media (max-width: 1100px) {
+      .stores { grid-template-columns: repeat(5, 1fr); }
+      .leaflets { grid-template-columns: repeat(3, 1fr); }
+      .detail-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 720px) {
+      .header { flex-wrap: wrap; padding: 12px; }
+      .nav { order: 4; width: 100%; justify-content: space-around; }
+      .search { order: 3; width: 100%; }
+      .hero { flex-direction: column; text-align: center; }
+      .stores { grid-template-columns: repeat(3, 1fr); }
+      .leaflets { grid-template-columns: repeat(2, 1fr); }
+      .products-grid { grid-template-columns: 1fr; }
     }
   </style>
 
-  <!-- 🔹 Initialize CleverTap SDK on Page Load -->
+  <!-- CleverTap SDK -->
   <script type="text/javascript">
     var clevertap = { event: [], profile: [], account: [], onUserLogin: [], notifications: [], privacy: []};
-    clevertap.account.push({ "id": "TEST-654-Z9R-646Z" ,});
+    clevertap.account.push({ "id": "TEST-654-Z9R-646Z" });
     clevertap.region = "eu1";
     clevertap.privacy.push({ optOut: false });
     clevertap.privacy.push({ useIP: false });
@@ -81,55 +583,402 @@
 
     window.clevertap = clevertap;
   </script>
+</head>
 
-  <!-- 🔹 User Login Function -->
-  <script type="text/javascript">
+<body>
+
+  <div class="promo-bar" onclick="trackEvent('Promo Bar Clicked', { promo_name: 'DealPop Weekly Giveaway' })">
+    🎁 <span>DEALPOP WEEKLY GIVEAWAY</span> — Win a $500 shopping spree. Tap to enter!
+  </div>
+
+  <header class="header">
+    <div class="logo" onclick="goHome()">
+      <span class="logo-mark">D</span>
+      <span>DealPop</span>
+    </div>
+    <nav class="nav">
+      <div class="nav-item" onclick="trackEvent('Nav Clicked', { item: 'Stores' })">Stores ▾</div>
+      <div class="nav-item" onclick="trackEvent('Nav Clicked', { item: 'Products' })">Products ▾</div>
+      <div class="nav-item" onclick="trackEvent('Nav Clicked', { item: 'Categories' })">Categories ▾</div>
+    </nav>
+    <div class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="searchInput" type="text" placeholder="Search DealPop e.g. milk, eggs, electronics" onkeydown="handleSearch(event)" />
+    </div>
+    <div class="location" onclick="trackEvent('Location Clicked', { city: 'Mumbai' })">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      Mumbai
+    </div>
+    <button class="push-btn" onclick="enablePush()">🔔 Enable Push</button>
+    <button class="app-btn" onclick="trackEvent('App Download Clicked', { source: 'header' })">Get the app</button>
+  </header>
+
+  <!-- HOME VIEW -->
+  <div class="container" id="homeView">
+
+    <div class="hero">
+      <div>
+        <h1>Today's best deals, all in one place</h1>
+        <p>Browse the latest catalogues from your favourite stores. Save offers, share with friends, never miss a price drop.</p>
+      </div>
+      <button class="hero-cta" onclick="trackEvent('Hero CTA Clicked', { cta: 'Explore Deals' }); document.getElementById('leafletsGrid').scrollIntoView({behavior:'smooth'});">Explore Deals →</button>
+    </div>
+
+    <div class="section-head">
+      <h2>Popular Stores</h2>
+      <button class="pill-btn" onclick="trackEvent('Select Stores Clicked', {})">
+        Choose stores ›
+      </button>
+    </div>
+
+    <div class="stores" id="storesGrid"></div>
+
+    <div class="section-head" style="margin-top: 40px;">
+      <h2>Latest Catalogues</h2>
+      <button class="pill-btn" onclick="trackEvent('View All Catalogues Clicked', {})">View all ›</button>
+    </div>
+
+    <div class="leaflets" id="leafletsGrid"></div>
+  </div>
+
+  <!-- LEAFLET DETAIL VIEW -->
+  <div class="detail-view" id="leafletDetail"></div>
+
+  <!-- STORE DETAIL VIEW -->
+  <div class="detail-view" id="storeDetail"></div>
+
+  <!-- Floating login -->
+  <div class="login-fab" onclick="openLogin()">👤 Login</div>
+
+  <!-- Login modal -->
+  <div class="modal-bg" id="loginModal">
+    <div class="modal">
+      <h2>Sign in to DealPop</h2>
+      <input type="text" id="identity" placeholder="Identity (e.g., user123)" />
+      <input type="email" id="email" placeholder="Email" />
+      <input type="text" id="name" placeholder="Name" />
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeLogin()">Cancel</button>
+        <button class="btn-primary" onclick="handleUserLogin()">Sign in</button>
+      </div>
+      <div style="margin-top: 14px; display: flex; gap: 8px;">
+        <button class="btn-secondary" style="flex:1; padding:10px; border:0; border-radius:10px; cursor:pointer;" onclick="enablePush()">Enable Push</button>
+        <button class="btn-secondary" style="flex:1; padding:10px; border:0; border-radius:10px; cursor:pointer;" onclick="trackProductViewed()">Track Product Viewed</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ───────── Data ─────────
+    const stores = [
+      { id: 'biedronka',   name: 'Biedronka',    count: 21, logo: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/retailers-logos/d30f9b55-1aaa-44e2-8e2c-e9883e17b70a&f=webp&w=100' },
+      { id: 'lidl',        name: 'Lidl',         count: 8,  logo: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/retailers-logos/67331532-81bb-41ef-be67-44bc5120af72&f=webp&w=100' },
+      { id: 'kaufland',    name: 'Kaufland',     count: 8,  logo: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/retailers-logos/19e9b9c7-7144-4698-9437-77dcddabcf85&f=webp&w=100' },
+      { id: 'intermarche', name: 'Intermarche',  count: 4,  logo: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/retailers-logos/29e8021e-e950-44eb-83f6-798375b60db8&f=webp&w=100' },
+      { id: 'netto',       name: 'Netto',        count: 7,  logo: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/retailers-logos/918407f6-ae88-4071-80ae-5a100aa1b9cb&f=webp&w=100' },
+      { id: 'pepco',       name: 'Pepco',        count: 3,  logo: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/retailers-logos/ced1ad91-36b2-4665-8651-964c6b2f023d&f=webp&w=100' },
+      { id: 'dino',        name: 'Dino',         count: 2,  logo: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/retailers-logos/2a6832bf-1aef-4a60-9ab7-351d3be0ad85&f=webp&w=100' },
+      { id: 'action',      name: 'Action',       count: 4,  logo: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/retailers-logos/4cb2b784-be1c-418e-a90d-c214a555a31a&f=webp&w=100' },
+      { id: 'aldi',        name: 'Aldi',         count: 11, logo: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/retailers-logos/ed787966-eab9-4c9d-8d1c-7ffd49166e3e&f=webp&w=100' },
+    ];
+
+    const sampleProducts = [
+      { name: 'Dove Lavender & Camomile Cream Deo', price: '$3.49', img: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspaperProducts/019e3b23-e198-719f-b000-d17a68d92e73/dovewholebodydeo_LavenderCamomile_dezodorantwkremie1.png&q=60&f=webp&w=700' },
+      { name: 'Dove Lavender & Camomile Spray',     price: '$4.29', img: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspaperProducts/019e3b26-692c-737a-850d-f051a43aa441/dovewholebodydeo_LavenderCamomile__dezodorantwsprayu1.png&q=60&f=webp&w=700' },
+      { name: 'Dove Raspberry & Rose Cream',        price: '$3.99', img: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspaperProducts/019e3b2a-8c9d-72b8-bee6-ba6302701755/DovewholebodydeoRossberyRoseDezodorantwkremie1.png&q=60&f=webp&w=700' },
+      { name: 'Dove Original Cream',                price: '$2.99', img: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspaperProducts/019e3b2b-266f-723f-9c4e-fb8608eb1563/DovewholebodydeoOriginalDezodorantwkremie1.png&q=60&f=webp&w=700' },
+    ];
+
+    const leaflets = [
+      { id: 'l1', storeId: 'aldi',        store: 'Aldi',            title: 'Pick Aldi for Grilling!',         badge: 'Ends tomorrow', badgeType: 'ending',  valid: 'Fri 22 May – Sat 23 May', cover: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspapers/019e4522-987d-73b3-954d-1cca8c197a44/KW21_26_G2240_1-dopakapiateksobota11.jpg&q=40&f=webp&h=480' },
+      { id: 'l2', storeId: 'polomarket',  store: 'Polomarket',      title: 'Super Hits',                       badge: 'Ends tomorrow', badgeType: 'ending',  valid: 'Fri 22 May – Sat 23 May', cover: 'https://cdn1.promotons.com/resize?fileName=staging/gazetkowo/newspapers/019e4a35-daf4-70cf-811f-9015fdde5971/img-1.jpg&q=40&f=webp&h=480' },
+      { id: 'l3', storeId: 'netto',       store: 'Netto',           title: 'Your Garden, Full of Greenery!',   badge: 'Active',        badgeType: 'current', valid: 'Tue 7 Apr – While stocks last', cover: 'https://cdn1.promotons.com/resize?fileName=staging/gazetkowo/newspapers/019ddd98-5b91-73d9-b409-e382db38b841/img-1.jpg&q=40&f=webp&h=480' },
+      { id: 'l4', storeId: 'polomarket',  store: 'Polomarket',      title: 'Ice-cream Breakthrough',           badge: 'Active',        badgeType: 'current', valid: 'Mon 19 May – Sun 25 May', cover: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspapers/019df78f-e64f-7188-925e-fe98f1beb716/0001jpg.jpg&q=40&f=webp&h=480' },
+      { id: 'l5', storeId: 'brw',         store: 'Black Red White', title: 'Your Garden, Just the Way You Like It!', badge: 'Valid until Wed', badgeType: 'future', valid: 'Until Wed 27 May', cover: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspapers/019e202f-f8dc-72b6-902a-2f9b1310d676/gazetka-ogrod-11-270526-images-0jpg.jpg&q=40&f=webp&h=480' },
+      { id: 'l6', storeId: 'biedronka',   store: 'Biedronka',       title: 'My Cheap Weekend',                  badge: 'Active',        badgeType: 'current', valid: 'Wed 21 May – Sun 25 May', cover: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspapers/019e4b9a-e3ff-7392-a12e-7a6c7c1f0b40/Biedronka-Gazetka-2026-05-21-0.png&q=40&f=webp&h=480' },
+      { id: 'l7', storeId: 'biedronka',   store: 'Biedronka',       title: 'Hits and Inspirations from Biedronka', badge: 'Active',     badgeType: 'current', valid: 'Thu 22 May – Wed 28 May', cover: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspapers/019e4dc0-338e-732b-8f8f-79b45a584537/Biedronka-Gazetka-2026-05-22-0.png&q=40&f=webp&h=480' },
+      { id: 'l8', storeId: 'aldi',        store: 'Aldi',            title: 'Super Saturday',                    badge: 'Active',        badgeType: 'current', valid: 'Sat 24 May only', cover: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspapers/019e4068-f2de-7017-ae7b-577da1cfafd0/kw21-26-g2235-1-super-sobota-images-0jpg.jpg&q=40&f=webp&h=480' },
+      { id: 'l9', storeId: 'aldi',        store: 'Aldi',            title: "Men's Clothing at Super Prices",    badge: 'Active',        badgeType: 'current', valid: 'Mon 19 May – Sat 24 May', cover: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspapers/019e3a6b-d53a-711a-b143-b9dbdf6ad68b/hiperComPage7007989.jpeg&q=40&f=webp&h=480' },
+      { id: 'l10', storeId: 'lidl',       store: 'Lidl',            title: 'Weekly Offers',                     badge: 'Active',        badgeType: 'current', valid: 'Mon 19 May – Sun 25 May', cover: 'https://cdn1.promotons.com/resize?fileName=staging/gazetkowo/newspapers/019e3846-be86-7222-9656-659a14a237d5/img-1.jpg&q=40&f=webp&h=480' },
+    ];
+
+    // ───────── CleverTap event helper ─────────
+    function trackEvent(name, props) {
+      try {
+        if (window.clevertap && window.clevertap.event) {
+          window.clevertap.event.push(name, props || {});
+        }
+        console.log('[CT event]', name, props || {});
+      } catch (e) {
+        console.warn('CT trackEvent failed', e);
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => t.classList.remove('show'), 1800);
+    }
+
+    // ───────── Views ─────────
+    function showView(viewId) {
+      ['homeView', 'leafletDetail', 'storeDetail'].forEach(id => {
+        const el = document.getElementById(id);
+        if (id === viewId) {
+          el.classList.add('show');
+          el.style.display = '';
+        } else {
+          el.classList.remove('show');
+          if (id !== 'homeView') el.style.display = 'none';
+        }
+      });
+      if (viewId === 'homeView') {
+        document.getElementById('homeView').style.display = '';
+      } else {
+        document.getElementById('homeView').style.display = 'none';
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goHome() {
+      showView('homeView');
+      trackEvent('Home Viewed', {});
+    }
+
+    // ───────── Render Home ─────────
+    function renderStores() {
+      const grid = document.getElementById('storesGrid');
+      grid.innerHTML = stores.map(s => `
+        <div class="store-card" onclick="openStoreDetail('${s.id}')">
+          <span class="heart" onclick="event.stopPropagation(); toggleFavorite(this, '${s.name.replace(/'/g, "\\'")}')">♡</span>
+          <img src="${s.logo}" alt="${s.name}" />
+          <div class="count">${s.count} catalogues</div>
+        </div>
+      `).join('') + `
+        <div class="store-card all" onclick="trackEvent('All Stores Clicked', {})">
+          <div class="all-icon">›</div>
+          <div class="count">All stores</div>
+        </div>
+      `;
+    }
+
+    function renderLeaflets() {
+      const grid = document.getElementById('leafletsGrid');
+      grid.innerHTML = leaflets.map((l, i) => `
+        <div class="leaflet" onclick="openLeafletDetail('${l.id}', ${i})">
+          <div class="badge ${l.badgeType}">${l.badge}</div>
+          <img class="leaflet-cover" src="${l.cover}" alt="${l.title}" loading="lazy" />
+          <div class="leaflet-meta">
+            <h3>${l.store}</h3>
+            <p>${l.title}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ───────── Leaflet detail ─────────
+    function openLeafletDetail(id, position) {
+      const l = leaflets.find(x => x.id === id);
+      if (!l) return;
+
+      trackEvent('Banner Clicked', {
+        leaflet_id: l.id,
+        position: position + 1,
+        store_name: l.store,
+        leaflet_title: l.title,
+        status: l.badge
+      });
+      trackEvent('Leaflet Detail Viewed', {
+        leaflet_id: l.id,
+        store_name: l.store,
+        leaflet_title: l.title,
+        validity: l.valid
+      });
+
+      const productsHTML = sampleProducts.map((p, i) => `
+        <div class="product-card" onclick="event.stopPropagation(); onProductClick('${l.id}', ${i})">
+          <img src="${p.img}" alt="${p.name}" />
+          <div>
+            <div class="pname">${p.name}</div>
+            <div class="pprice">${p.price}</div>
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('leafletDetail').innerHTML = `
+        <button class="back-btn" onclick="goHome()">‹ Back to home</button>
+        <div class="detail-grid">
+          <div>
+            <img class="detail-cover" src="${l.cover}" alt="${l.title}" />
+          </div>
+          <div class="detail-info">
+            <span class="detail-store">${l.store}</span>
+            <h1>${l.title}</h1>
+            <div class="detail-validity">${l.valid} · <strong>${l.badge}</strong></div>
+            <div class="detail-actions">
+              <button class="primary" onclick="onViewLeaflet('${l.id}')">📖 View catalogue</button>
+              <button onclick="onSaveLeaflet('${l.id}')">⭐ Save</button>
+              <button onclick="onShareLeaflet('${l.id}')">↗ Share</button>
+              <button onclick="onAddToList('${l.id}')">＋ Shopping list</button>
+              <button onclick="enablePush()">🔔 Notify me</button>
+            </div>
+            <div class="detail-products">
+              <h3>Featured products</h3>
+              <div class="products-grid">${productsHTML}</div>
+            </div>
+          </div>
+        </div>
+      `;
+      showView('leafletDetail');
+    }
+
+    function onViewLeaflet(id) {
+      const l = leaflets.find(x => x.id === id);
+      trackEvent('Leaflet Opened', { leaflet_id: id, store_name: l.store, leaflet_title: l.title });
+      showToast('Opening catalogue…');
+    }
+    function onSaveLeaflet(id) {
+      const l = leaflets.find(x => x.id === id);
+      trackEvent('Leaflet Saved', { leaflet_id: id, store_name: l.store, leaflet_title: l.title });
+      showToast('Saved to your list');
+    }
+    function onShareLeaflet(id) {
+      const l = leaflets.find(x => x.id === id);
+      trackEvent('Leaflet Shared', { leaflet_id: id, store_name: l.store, leaflet_title: l.title });
+      showToast('Share link copied');
+    }
+    function onAddToList(id) {
+      const l = leaflets.find(x => x.id === id);
+      trackEvent('Added to Shopping List', { leaflet_id: id, store_name: l.store, leaflet_title: l.title });
+      showToast('Added to shopping list');
+    }
+    function onProductClick(leafletId, productIndex) {
+      const p = sampleProducts[productIndex];
+      trackEvent('Product Viewed', {
+        product_name: p.name,
+        product_price: p.price,
+        source_leaflet: leafletId
+      });
+      showToast('Product: ' + p.name);
+    }
+
+    // ───────── Store detail ─────────
+    function openStoreDetail(storeId) {
+      const s = stores.find(x => x.id === storeId);
+      if (!s) return;
+      const storeLeaflets = leaflets.filter(l => l.storeId === storeId);
+
+      trackEvent('Store Clicked', { store_id: s.id, store_name: s.name });
+      trackEvent('Store Detail Viewed', {
+        store_id: s.id,
+        store_name: s.name,
+        leaflet_count: storeLeaflets.length
+      });
+
+      const list = storeLeaflets.length
+        ? storeLeaflets.map((l, i) => `
+            <div class="leaflet" onclick="openLeafletDetail('${l.id}', ${i})">
+              <div class="badge ${l.badgeType}">${l.badge}</div>
+              <img class="leaflet-cover" src="${l.cover}" alt="${l.title}" loading="lazy" />
+              <div class="leaflet-meta">
+                <h3>${l.store}</h3>
+                <p>${l.title}</p>
+              </div>
+            </div>`).join('')
+        : `<p style="color: var(--muted);">No active catalogues for ${s.name} right now.</p>`;
+
+      document.getElementById('storeDetail').innerHTML = `
+        <button class="back-btn" onclick="goHome()">‹ Back to home</button>
+        <div class="store-detail-header">
+          <img src="${s.logo}" alt="${s.name}" />
+          <div style="flex:1;">
+            <h1>${s.name}</h1>
+            <p>${s.count} catalogues available</p>
+          </div>
+          <button class="app-btn" onclick="onFollowStore('${s.id}')">＋ Follow</button>
+        </div>
+        <h2 style="margin: 0 0 18px;">Active catalogues</h2>
+        <div class="leaflets">${list}</div>
+      `;
+      showView('storeDetail');
+    }
+
+    function onFollowStore(storeId) {
+      const s = stores.find(x => x.id === storeId);
+      trackEvent('Store Followed', { store_id: s.id, store_name: s.name });
+      showToast('Following ' + s.name);
+    }
+
+    // ───────── Misc ─────────
+    function toggleFavorite(el, storeName) {
+      el.classList.toggle('active');
+      const isFav = el.classList.contains('active');
+      el.textContent = isFav ? '♥' : '♡';
+      trackEvent(isFav ? 'Store Favorited' : 'Store Unfavorited', { store_name: storeName });
+    }
+
+    function handleSearch(e) {
+      if (e.key === 'Enter') {
+        const q = document.getElementById('searchInput').value.trim();
+        if (q) {
+          trackEvent('Search Performed', { query: q });
+          showToast('Searching: ' + q);
+        }
+      }
+    }
+
+    // ───────── Login ─────────
+    function openLogin() {
+      document.getElementById('loginModal').classList.add('show');
+      trackEvent('Login Modal Opened', {});
+    }
+    function closeLogin() {
+      document.getElementById('loginModal').classList.remove('show');
+    }
     function handleUserLogin() {
       const identity = document.getElementById('identity').value;
       const email = document.getElementById('email').value;
       const name = document.getElementById('name').value;
-
-      if (!identity || !email || !name) {
-        alert('Please fill in all fields');
-        return;
-      }
-
-     
-clevertap.onUserLogin.push({
-        Site: {
-          Identity: identity,
-          Email: email,
-          Name: name,
-          customId:identity,
-        }
+      if (!identity || !email || !name) { alert('Please fill in all fields'); return; }
+      clevertap.onUserLogin.push({
+        Site: { Identity: identity, Email: email, Name: name }
       });
-      console.log('User logged in:', { identity, email, name });
-      alert('User logged in successfully!');
+      trackEvent('User Logged In', { identity, email, name });
+      closeLogin();
+      showToast('Welcome, ' + name);
     }
+
+    // 🔔 Push opt-in — wired to the native CleverTap notifications prompt
+    function enablePush() {
+      clevertap.notifications.push({
+        titleText: 'Would you like to receive Push Notifications?',
+        bodyText: 'We promise to only send you relevant content and give you updates on your transactions',
+        okButtonText: 'Sign me up!',
+        rejectButtonText: 'No thanks',
+        okButtonColor: '#F28046'
+      });
+      trackEvent('Push Opt-in Shown', { source: 'enable_push_button' });
+    }
+
+    function trackProductViewed() {
+      trackEvent('Product Viewed', { source: 'manual_button' });
+      showToast('Product Viewed event fired');
+    }
+
+    // ───────── Boot ─────────
+    document.addEventListener('DOMContentLoaded', () => {
+      renderStores();
+      renderLeaflets();
+      trackEvent('Page Viewed', {
+        page_name: 'Home',
+        store_count: stores.length,
+        leaflet_count: leaflets.length
+      });
+    });
   </script>
-</head>
-
-<body>
-  <h1>Hello dev</h1>
-  <p>Welcome to my CleverTap Website!</p>
-  <p>Visit my <a href="https://github.com/devennazareCT/devennazareCT.github.io.git" target="_blank">GitHub Repo</a></p>
-
-  <!-- User Form -->
-  <div class="form-container">
-    <h2 style="margin-top: 0;">User Login</h2>
-    <input type="text" id="identity" placeholder="Identity (e.g., user123)" />
-    <input type="email" id="email" placeholder="Email" />
-    <input type="text" id="name" placeholder="Name" />
-    <button onclick="handleUserLogin()">Login</button>
-  </div>
-
-  <button onclick='if(window.clevertap) clevertap.event.push("Product viewed"); else alert("Please initialize CleverTap first");'>
-    Track Product Viewed
-  </button>
-
-  <button onclick='clevertap.notifications.push({"titleText":"Would you like to receive Push Notifications?","bodyText":"We promise to only send you relevant content and give you updates on your transactions","okButtonText":"Sign me up!","rejectButtonText":"No thanks","okButtonColor":"#F28046"});'>
-    Enable Push Notifications
-  </button>
-
 </body>
 </html>
