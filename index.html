@@ -1046,6 +1046,8 @@
     document.addEventListener("CT_web_native_display", function(event) {
       console.log('[CT_web_native_display] full event:', event);
       console.log('[CT_web_native_display] event.detail payload:', event.detail);
+ const data = event.detail;
+   clevertap.renderNotificationViewed(data);
 
       try {
         let payloads = event.detail;
