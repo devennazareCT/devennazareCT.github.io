@@ -148,6 +148,41 @@
     }
     .app-btn:hover { background: #1E293B; }
 
+    /* Notification bell */
+    .bell {
+      position: relative;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text);
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .bell:hover { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }
+    .bell-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--card);
+    }
+    .bell-badge.show { display: inline-flex; }
+
     .container {
       max-width: 1280px;
       margin: 0 auto;
@@ -610,6 +645,13 @@
       Mumbai
     </div>
     <button class="push-btn" onclick="enablePush()">🔔 Enable Push</button>
+    <div id="notification_bell" class="bell" onclick="onBellClick()" title="Notifications">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      </svg>
+      <span id="notification_bell_badge" class="bell-badge">0</span>
+    </div>
     <button class="app-btn" onclick="trackEvent('App Download Clicked', { source: 'header' })">Get the app</button>
   </header>
 
@@ -959,25 +1001,13 @@
       console.log('[enablePush] Notification.permission =', permission);
       console.log('[enablePush] location.protocol =', location.protocol);
 
-      if (permission === 'denied') {
-        showToast('Notifications blocked. Enable them in browser site settings.');
-        console.warn('Browser-level permission is "denied". Soft prompt will not appear until you reset it in Site Settings.');
-        return;
-      }
-      if (permission === 'granted') {
-        showToast('Push already enabled for this site.');
-        console.info('Browser-level permission is "granted" — soft prompt is skipped.');
-        return;
-      }
-
+     
       clevertap.notifications.push({
         titleText: 'Would you like to receive Push Notifications?',
         bodyText: 'We promise to only send you relevant content and give you updates on your transactions',
         okButtonText: 'Sign me up!',
         rejectButtonText: 'No thanks',
-        okButtonColor: '#F28046',
-        askAgainTimeInSeconds: 5,
-        serviceWorkerPath: '/clevertap_sw.js'
+        okButtonColor: '#F28046'
       });
       trackEvent('Push Opt-in Shown', { source: 'enable_push_button' });
     }
@@ -999,6 +1029,19 @@
       trackEvent('Product Viewed', { source: 'manual_button' });
       showToast('Product Viewed event fired');
     }
+
+    // ───────── Notification bell ─────────
+    function onBellClick() {
+      console.log("Inbox button clicked")
+    }
+
+    function setBellBadge(count) {
+      const badge = document.getElementById('notification_bell_badge');
+      if (!badge) return;
+      badge.textContent = count;
+      badge.classList.toggle('show', count > 0);
+    }
+    window.setBellBadge = setBellBadge;
 
     // ───────── Hero banner (driven by CleverTap Native Display) ─────────
     // Default state — overwritten if a CT_web_native_display payload arrives.
