@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Communication Preferences — Nexus Group</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- CleverTap Init -->
+  <script type="text/javascript">
+    var clevertap = {
+      event: [], profile: [], region: 'eu1',
+      account: [], onUserLogin: [], notifications: []
+    };
+    clevertap.account.push({ "id": "468-W87-546Z" });
+    (function () {
+      var wzrk = document.createElement('script');
+      wzrk.type = 'text/javascript';
+      wzrk.async = true;
+      wzrk.src = 'https://d2r1yp2w7bby2u.cloudfront.net/js/clevertap.min.js';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(wzrk, s);
+    })();
+  </script>
+
+  <!-- CleverTap Email Unsubscribe Helper — exposes $WZRK_WR -->
+  <script src="https://static.clevertap.com/js/wzrk_email.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ECEFFE;
+      --surface: #FFFFFF;
+      --surface-2: #F3F5FD;
+      --border: #DDE3F4;
+      --border-light: #EEF1FA;
+      --accent: #3A5EE0;
+      --accent-soft: #EBF0FF;
+      --accent-hover: #2D4EC8;
+      --text-1: #1A1F3C;
+      --text-2: #5A6285;
+      --text-3: #9099BC;
+      --toggle-off: #C4CDE8;
+      --knob: #FFFFFF;
+      --shadow-card: 0 1px 3px rgba(30,50,140,0.05), 0 4px 18px rgba(30,50,140,0.06);
+      --r-card: 16px;
+      --r-toggle: 100px;
+      /* push brand palette */
+      --nova: #D94F7C;  --nova-soft: #FCEEF3;
+      --apex: #E07A10;  --apex-soft: #FEF3E8;
+      --bloom: #7C4FD4; --bloom-soft: #F3EEFF;
+      --forge: #0D9DAF; --forge-soft: #E6F8FA;
+      --drift: #0DAF76; --drift-soft: #E6FAF4;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0C0F1E; --surface: #141828; --surface-2: #1B2036;
+        --border: #232840; --border-light: #1C2138;
+        --accent: #5B7FFF; --accent-soft: #1A2348; --accent-hover: #7294FF;
+        --text-1: #E8ECFF; --text-2: #8891B5; --text-3: #4B5270;
+        --toggle-off: #252C48;
+        --shadow-card: 0 1px 4px rgba(0,0,0,0.3), 0 4px 20px rgba(0,0,0,0.25);
+        --nova-soft: #2C1420; --apex-soft: #261910; --bloom-soft: #1F1530;
+        --forge-soft: #0F2126; --drift-soft: #0F2120;
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #0C0F1E; --surface: #141828; --surface-2: #1B2036;
+      --border: #232840; --border-light: #1C2138;
+      --accent: #5B7FFF; --accent-soft: #1A2348; --accent-hover: #7294FF;
+      --text-1: #E8ECFF; --text-2: #8891B5; --text-3: #4B5270;
+      --toggle-off: #252C48;
+      --shadow-card: 0 1px 4px rgba(0,0,0,0.3), 0 4px 20px rgba(0,0,0,0.25);
+      --nova-soft: #2C1420; --apex-soft: #261910; --bloom-soft: #1F1530;
+      --forge-soft: #0F2126; --drift-soft: #0F2120;
+    }
+
+    :root[data-theme="light"] {
+      --bg: #ECEFFE; --surface: #FFFFFF; --surface-2: #F3F5FD;
+      --border: #DDE3F4; --border-light: #EEF1FA;
+      --accent: #3A5EE0; --accent-soft: #EBF0FF; --accent-hover: #2D4EC8;
+      --text-1: #1A1F3C; --text-2: #5A6285; --text-3: #9099BC;
+      --toggle-off: #C4CDE8;
+      --shadow-card: 0 1px 3px rgba(30,50,140,0.05), 0 4px 18px rgba(30,50,140,0.06);
+      --nova-soft: #FCEEF3; --apex-soft: #FEF3E8; --bloom-soft: #F3EEFF;
+      --forge-soft: #E6F8FA; --drift-soft: #E6FAF4;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text-1);
+      min-height: 100vh;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-mark {
+      width: 32px;
+      height: 32px;
+      background: var(--accent);
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .logo-mark svg { width: 16px; height: 16px; fill: white; }
+
+    .logo-name {
+      font-size: 16px;
+      font-weight: 750;
+      letter-spacing: -0.4px;
+      color: var(--text-1);
+    }
+
+    .logo-pipe { width: 1px; height: 16px; background: var(--border); margin: 0 2px; }
+
+    .logo-sub { font-size: 13px; color: var(--text-3); }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .theme-btn {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 5px 11px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: background 0.12s;
+      white-space: nowrap;
+    }
+
+    .theme-btn:hover { background: var(--border); }
+
+    .user-info { display: flex; align-items: center; gap: 9px; }
+
+    .user-detail { text-align: right; }
+
+    .user-label { font-size: 11px; color: var(--text-3); line-height: 1.2; }
+
+    .user-name { font-size: 13px; font-weight: 600; color: var(--text-1); line-height: 1.2; }
+
+    .user-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--accent-soft);
+      border: 2px solid var(--accent);
+      display: grid; place-items: center;
+      font-size: 13px; font-weight: 700; color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* ── Page layout ── */
+    .page-main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 36px 24px 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .page-header { margin-bottom: 10px; }
+
+    .page-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 7px;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 750;
+      letter-spacing: -0.5px;
+      color: var(--text-1);
+      line-height: 1.2;
+      margin-bottom: 7px;
+    }
+
+    .page-desc { font-size: 14px; color: var(--text-2); line-height: 1.6; max-width: 500px; }
+
+    /* ── Section card ── */
+    .pref-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+
+    .section-head {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .section-left { display: flex; align-items: center; gap: 13px; }
+
+    .section-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: var(--accent-soft);
+      display: grid; place-items: center; flex-shrink: 0;
+    }
+
+    .section-icon svg {
+      width: 18px; height: 18px;
+      stroke: var(--accent); fill: none;
+      stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .section-title {
+      font-size: 15px; font-weight: 700; letter-spacing: -0.2px;
+      color: var(--text-1); line-height: 1.2;
+    }
+
+    .section-desc { font-size: 12.5px; color: var(--text-3); margin-top: 2px; line-height: 1.4; }
+
+    .section-right {
+      display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+    }
+
+    .master-label { font-size: 12px; font-weight: 500; color: var(--text-3); }
+
+    /* ── Parent stripe ── */
+    .parent-stripe {
+      padding: 10px 22px 6px;
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    .parent-chip {
+      background: var(--accent-soft); color: var(--accent);
+      font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 3px 9px; border-radius: 20px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+
+    .parent-line { flex: 1; height: 1px; background: var(--border-light); }
+
+    .brand-count { font-size: 11px; color: var(--text-3); white-space: nowrap; flex-shrink: 0; }
+
+    /* ── Brand rows ── */
+    .brand-list { display: flex; flex-direction: column; }
+
+    .brand-row {
+      padding: 13px 22px;
+      display: flex; align-items: center; gap: 13px;
+      border-bottom: 1px solid var(--border-light);
+      transition: background 0.14s ease;
+    }
+
+    .brand-row:last-child { border-bottom: none; }
+    .brand-row:hover { background: var(--surface-2); }
+
+    .brand-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      display: grid; place-items: center;
+      font-size: 14px; font-weight: 800; letter-spacing: -0.5px;
+      flex-shrink: 0;
+    }
+
+    .brand-info { flex: 1; min-width: 0; }
+
+    .brand-name { font-size: 14px; font-weight: 650; color: var(--text-1); letter-spacing: -0.1px; }
+
+    .brand-cat { font-size: 11.5px; color: var(--text-3); margin-top: 1px; }
+
+    .toggle-group { display: flex; align-items: center; gap: 9px; flex-shrink: 0; }
+
+    .toggle-lbl {
+      font-size: 12px; font-weight: 500;
+      min-width: 22px; text-align: right;
+      transition: color 0.15s;
+    }
+
+    .toggle-lbl.is-off { color: var(--text-3); }
+
+    /* ── Toggle switch ── */
+    .toggle {
+      position: relative; display: inline-block;
+      width: 44px; height: 24px;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+    }
+
+    .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+
+    .t-track {
+      position: absolute; inset: 0;
+      border-radius: var(--r-toggle);
+      background: var(--toggle-off);
+      transition: background 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .t-knob {
+      position: absolute; top: 3px; left: 3px;
+      width: 18px; height: 18px;
+      background: var(--knob); border-radius: 50%;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .toggle input:checked ~ .t-track { background: var(--toggle-brand, var(--accent)); }
+    .toggle input:checked ~ .t-knob  { transform: translateX(20px); }
+    .toggle:focus-within .t-track    { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .t-track, .t-knob { transition: none; }
+    }
+
+    /* push brand colors */
+    .b-nova  .brand-icon { background: var(--nova-soft);  color: var(--nova); }
+    .b-apex  .brand-icon { background: var(--apex-soft);  color: var(--apex); }
+    .b-bloom .brand-icon { background: var(--bloom-soft); color: var(--bloom); }
+    .b-forge .brand-icon { background: var(--forge-soft); color: var(--forge); }
+    .b-drift .brand-icon { background: var(--drift-soft); color: var(--drift); }
+
+    .b-nova  .toggle { --toggle-brand: var(--nova); }
+    .b-apex  .toggle { --toggle-brand: var(--apex); }
+    .b-bloom .toggle { --toggle-brand: var(--bloom); }
+    .b-forge .toggle { --toggle-brand: var(--forge); }
+    .b-drift .toggle { --toggle-brand: var(--drift); }
+
+    .b-nova  .toggle-lbl.is-on { color: var(--nova); }
+    .b-apex  .toggle-lbl.is-on { color: var(--apex); }
+    .b-bloom .toggle-lbl.is-on { color: var(--bloom); }
+    .b-forge .toggle-lbl.is-on { color: var(--forge); }
+    .b-drift .toggle-lbl.is-on { color: var(--drift); }
+
+    /* ── Email loading skeleton ── */
+    .email-loading {
+      padding: 28px 22px;
+      display: flex; align-items: center; gap: 12px;
+      color: var(--text-3); font-size: 13px;
+    }
+
+    .loading-dots {
+      display: flex; gap: 5px;
+    }
+
+    .loading-dots span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+      animation: dotPulse 1.4s ease-in-out infinite;
+    }
+
+    .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes dotPulse {
+      0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+      40% { opacity: 1; transform: scale(1); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .loading-dots span { animation: none; opacity: 0.5; }
+    }
+
+    .email-error {
+      padding: 20px 22px;
+      font-size: 13px; color: var(--text-3);
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    /* ── Save bar ── */
+    .save-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 15px 22px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .save-hint { font-size: 13px; color: var(--text-2); line-height: 1.4; }
+    .save-hint strong { color: var(--text-1); font-weight: 650; }
+
+    .save-btn {
+      background: var(--accent); color: #fff;
+      border: none; border-radius: 10px;
+      padding: 9px 20px;
+      font-size: 13.5px; font-weight: 650;
+      cursor: pointer; letter-spacing: -0.1px;
+      transition: background 0.14s, transform 0.1s;
+      white-space: nowrap; flex-shrink: 0;
+    }
+
+    .save-btn:hover:not(:disabled) { background: var(--accent-hover); }
+    .save-btn:active:not(:disabled) { transform: scale(0.97); }
+    .save-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+    .save-btn.saved { background: #16A34A; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--text-1); color: var(--surface);
+      padding: 12px 20px; border-radius: 10px;
+      font-size: 13.5px; font-weight: 500;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+      opacity: 0; z-index: 999; white-space: nowrap;
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast.success { background: #16A34A; }
+    .toast.error { background: #DC2626; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .toast { transition: opacity 0.2s; transform: translateX(-50%); }
+    }
+
+    .footer-note {
+      font-size: 12px; color: var(--text-3);
+      text-align: center; line-height: 1.7; padding: 0 8px;
+    }
+
+    .footer-note a { color: var(--accent); text-decoration: none; }
+    .footer-note a:hover { text-decoration: underline; }
+
+    /* ── Responsive ── */
+    @media (max-width: 520px) {
+      .logo-pipe, .logo-sub { display: none; }
+      .user-detail { display: none; }
+      .page-main { padding: 24px 16px 60px; }
+      .section-head, .brand-row, .email-loading { padding-left: 16px; padding-right: 16px; }
+      .parent-stripe { padding-left: 16px; padding-right: 16px; }
+      .page-title { font-size: 20px; }
+      .save-bar { flex-direction: column; align-items: stretch; gap: 10px; }
+      .save-btn { text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Hidden email field for CleverTap $WZRK_WR -->
+<input type="hidden" id="ct-email" />
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand-logo" href="#">
+      <div class="logo-mark">
+        <svg viewBox="0 0 16 16"><path d="M8 1.5L14 5v6L8 14.5 2 11V5L8 1.5Z"/></svg>
+      </div>
+      <span class="logo-name">Nexus</span>
+      <div class="logo-pipe"></div>
+      <span class="logo-sub">Preferences</span>
+    </a>
+    <div class="header-right">
+      <button class="theme-btn" id="themeBtn" aria-label="Toggle color theme">
+        <span id="themeIcon">☀</span>
+        <span id="themeLbl">Light</span>
+      </button>
+      <div class="user-info">
+        <div class="user-detail">
+          <div class="user-label">Signed in as</div>
+          <div class="user-name" id="headerEmail">Loading…</div>
+        </div>
+        <div class="user-avatar" id="headerAvatar">?</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="page-main">
+
+  <div class="page-header">
+    <div class="page-eyebrow">Nexus Group</div>
+    <h1 class="page-title">Communication Preferences</h1>
+    <p class="page-desc">Choose how each Nexus brand communicates with you. Changes apply immediately after saving.</p>
+  </div>
+
+  <!-- ── Email Notifications ── -->
+  <section class="pref-section" aria-label="Email notification preferences">
+    <div class="section-head">
+      <div class="section-left">
+        <div class="section-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="2" y="4" width="20" height="16" rx="3"/>
+            <path d="M2 8l10 6 10-6"/>
+          </svg>
+        </div>
+        <div>
+          <div class="section-title">Email Notifications</div>
+          <div class="section-desc">Updates, offers &amp; account alerts by email.</div>
+        </div>
+      </div>
+      <div class="section-right" id="emailMasterWrap" style="display:none">
+        <span class="master-label">All brands</span>
+        <label class="toggle" aria-label="Toggle all email notifications">
+          <input type="checkbox" id="emailMaster">
+          <span class="t-track"></span>
+          <span class="t-knob"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- loading state -->
+    <div id="emailLoading" class="email-loading">
+      <div class="loading-dots"><span></span><span></span><span></span></div>
+      Fetching your subscription preferences…
+    </div>
+
+    <!-- populated by wzrk_email_fetched -->
+    <div id="emailParentStripe" style="display:none" class="parent-stripe">
+      <span class="parent-chip">Nexus Group</span>
+      <div class="parent-line"></div>
+      <span class="brand-count" id="emailBrandCount"></span>
+    </div>
+
+    <div class="brand-list" id="emailBrandList"></div>
+
+  </section>
+
+  <!-- ── Push Notifications ── -->
+  <section class="pref-section" aria-label="Push notification preferences">
+    <div class="section-head">
+      <div class="section-left">
+        <div class="section-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+        </div>
+        <div>
+          <div class="section-title">Push Notifications</div>
+          <div class="section-desc">Real-time alerts delivered to your device.</div>
+        </div>
+      </div>
+      <div class="section-right">
+        <span class="master-label">All brands</span>
+        <label class="toggle" aria-label="Toggle all push notifications">
+          <input type="checkbox" id="pushMaster">
+          <span class="t-track"></span>
+          <span class="t-knob"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="parent-stripe">
+      <span class="parent-chip">Nexus Group</span>
+      <div class="parent-line"></div>
+      <span class="brand-count">5 brands</span>
+    </div>
+
+    <div class="brand-list">
+
+      <div class="brand-row b-nova">
+        <div class="brand-icon">N</div>
+        <div class="brand-info">
+          <div class="brand-name">Nova</div>
+          <div class="brand-cat">Lifestyle &amp; Fashion</div>
+        </div>
+        <div class="toggle-group">
+          <span class="toggle-lbl is-off">Off</span>
+          <label class="toggle" aria-label="Nova push notifications">
+            <input type="checkbox" data-group="push">
+            <span class="t-track"></span><span class="t-knob"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="brand-row b-apex">
+        <div class="brand-icon">A</div>
+        <div class="brand-info">
+          <div class="brand-name">Apex</div>
+          <div class="brand-cat">Sports &amp; Fitness</div>
+        </div>
+        <div class="toggle-group">
+          <span class="toggle-lbl is-off">Off</span>
+          <label class="toggle" aria-label="Apex push notifications">
+            <input type="checkbox" data-group="push">
+            <span class="t-track"></span><span class="t-knob"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="brand-row b-bloom">
+        <div class="brand-icon">B</div>
+        <div class="brand-info">
+          <div class="brand-name">Bloom</div>
+          <div class="brand-cat">Beauty &amp; Wellness</div>
+        </div>
+        <div class="toggle-group">
+          <span class="toggle-lbl is-off">Off</span>
+          <label class="toggle" aria-label="Bloom push notifications">
+            <input type="checkbox" data-group="push">
+            <span class="t-track"></span><span class="t-knob"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="brand-row b-forge">
+        <div class="brand-icon">F</div>
+        <div class="brand-info">
+          <div class="brand-name">Forge</div>
+          <div class="brand-cat">Technology</div>
+        </div>
+        <div class="toggle-group">
+          <span class="toggle-lbl is-on">On</span>
+          <label class="toggle" aria-label="Forge push notifications">
+            <input type="checkbox" data-group="push" checked>
+            <span class="t-track"></span><span class="t-knob"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="brand-row b-drift">
+        <div class="brand-icon">D</div>
+        <div class="brand-info">
+          <div class="brand-name">Drift</div>
+          <div class="brand-cat">Travel &amp; Experiences</div>
+        </div>
+        <div class="toggle-group">
+          <span class="toggle-lbl is-off">Off</span>
+          <label class="toggle" aria-label="Drift push notifications">
+            <input type="checkbox" data-group="push">
+            <span class="t-track"></span><span class="t-knob"></span>
+          </label>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Save bar ── -->
+  <div class="save-bar">
+    <p class="save-hint" id="saveHint">
+      <strong>You have unsaved changes.</strong> Save to apply your preferences.
+    </p>
+    <button class="save-btn" id="saveBtn">Save Preferences</button>
+  </div>
+
+  <p class="footer-note">
+    Preferences take effect immediately after saving. To stop all Nexus communications,
+    use the unsubscribe link in any email.
+    &nbsp;·&nbsp;
+    <a href="privacypolicy.html">Privacy Policy</a>
+  </p>
+
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+
+  /* ── Theme ── */
+  var root = document.documentElement;
+  var themeBtn  = document.getElementById('themeBtn');
+  var themeIcon = document.getElementById('themeIcon');
+  var themeLbl  = document.getElementById('themeLbl');
+  var sysDark   = function() { return window.matchMedia('(prefers-color-scheme: dark)').matches; };
+  var theme     = sysDark() ? 'dark' : 'light';
+
+  function applyTheme(t) {
+    theme = t;
+    root.setAttribute('data-theme', t);
+    themeIcon.textContent = t === 'dark' ? '☾' : '☀';
+    themeLbl.textContent  = t === 'dark' ? 'Dark' : 'Light';
+  }
+
+  applyTheme(theme);
+  themeBtn.addEventListener('click', function() { applyTheme(theme === 'dark' ? 'light' : 'dark'); });
+
+  /* ── Toggle utilities ── */
+  function syncLabel(input) {
+    var grp = input.closest('.toggle-group');
+    var lbl = grp && grp.querySelector('.toggle-lbl');
+    if (!lbl) return;
+    lbl.textContent = input.checked ? 'On' : 'Off';
+    lbl.classList.toggle('is-on',  input.checked);
+    lbl.classList.toggle('is-off', !input.checked);
+  }
+
+  function syncMaster(group) {
+    var children = Array.prototype.slice.call(document.querySelectorAll('[data-group="' + group + '"]'));
+    var master   = document.getElementById(group + 'Master');
+    if (!master || !children.length) return;
+    var onCount  = children.filter(function(t) { return t.checked; }).length;
+    master.indeterminate = onCount > 0 && onCount < children.length;
+    master.checked       = onCount === children.length;
+  }
+
+  /* ── Push toggles (static) ── */
+  Array.prototype.forEach.call(document.querySelectorAll('[data-group="push"]'), function(input) {
+    syncLabel(input);
+    input.addEventListener('change', function() {
+      syncLabel(input);
+      syncMaster('push');
+      markUnsaved();
+    });
+  });
+
+  var pushMaster = document.getElementById('pushMaster');
+  syncMaster('push');
+  pushMaster.addEventListener('change', function() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-group="push"]'), function(t) {
+      t.checked = pushMaster.checked;
+      syncLabel(t);
+    });
+    markUnsaved();
+  });
+
+  /* ── Email group colors ── */
+  var GROUP_PALETTE = [
+    { color: '#D94F7C', soft: 'rgba(217,79,124,0.12)'  },
+    { color: '#E07A10', soft: 'rgba(224,122,16,0.12)'  },
+    { color: '#7C4FD4', soft: 'rgba(124,79,212,0.12)'  },
+    { color: '#0D9DAF', soft: 'rgba(13,157,175,0.12)'  },
+    { color: '#0DAF76', soft: 'rgba(13,175,118,0.12)'  },
+    { color: '#3A5EE0', soft: 'rgba(58,94,224,0.12)'   },
+    { color: '#AF5E0D', soft: 'rgba(175,94,13,0.12)'   },
+  ];
+
+  /* ── Render email groups from CleverTap callback ── */
+  window.renderEmailGroups = function(groups) {
+    var loading    = document.getElementById('emailLoading');
+    var stripe     = document.getElementById('emailParentStripe');
+    var list       = document.getElementById('emailBrandList');
+    var masterWrap = document.getElementById('emailMasterWrap');
+    var countEl    = document.getElementById('emailBrandCount');
+
+    loading.style.display = 'none';
+    stripe.style.display  = 'flex';
+    masterWrap.style.display = 'flex';
+    countEl.textContent   = groups.length + ' brand' + (groups.length !== 1 ? 's' : '');
+
+    list.innerHTML = '';
+
+    groups.forEach(function(group, i) {
+      var palette     = GROUP_PALETTE[i % GROUP_PALETTE.length];
+      var initial     = (group.name || '?').charAt(0).toUpperCase();
+      // toggle ON = subscribed = NOT unsubscribed
+      var isSubscribed = !group.isUnsubscribed;
+
+      var row = document.createElement('div');
+      row.className = 'brand-row';
+
+      row.innerHTML =
+        '<div class="brand-icon" style="background:' + palette.soft + ';color:' + palette.color + '">' + initial + '</div>' +
+        '<div class="brand-info">' +
+          '<div class="brand-name">' + escapeHtml(group.name) + '</div>' +
+          '<div class="brand-cat">Email subscription group</div>' +
+        '</div>' +
+        '<div class="toggle-group">' +
+          '<span class="toggle-lbl ' + (isSubscribed ? 'is-on' : 'is-off') + '" style="' + (isSubscribed ? 'color:' + palette.color : '') + '">' +
+            (isSubscribed ? 'On' : 'Off') +
+          '</span>' +
+          '<label class="toggle" aria-label="' + escapeHtml(group.name) + ' email notifications">' +
+            '<input type="checkbox" data-group="email" data-name="' + escapeHtml(group.name) + '"' + (isSubscribed ? ' checked' : '') + ' style="--toggle-brand:' + palette.color + '">' +
+            '<span class="t-track" style="' + (isSubscribed ? '--toggle-brand:' + palette.color : '') + '"></span>' +
+            '<span class="t-knob"></span>' +
+          '</label>' +
+        '</div>';
+
+      // wire toggle-brand CSS variable on the track
+      var track  = row.querySelector('.t-track');
+      var input  = row.querySelector('input[type=checkbox]');
+      input.addEventListener('change', function() {
+        syncEmailToggleColor(input, track, palette.color);
+        syncLabel(input);
+        syncMaster('email');
+        markUnsaved();
+      });
+      syncEmailToggleColor(input, track, palette.color);
+
+      list.appendChild(row);
+    });
+
+    syncMaster('email');
+
+    document.getElementById('emailMaster').addEventListener('change', function() {
+      Array.prototype.forEach.call(document.querySelectorAll('[data-group="email"]'), function(t) {
+        t.checked = document.getElementById('emailMaster').checked;
+        var tk = t.closest('.brand-row').querySelector('.t-track');
+        var pl = GROUP_PALETTE[Array.prototype.indexOf.call(list.children, t.closest('.brand-row')) % GROUP_PALETTE.length];
+        syncEmailToggleColor(t, tk, pl.color);
+        syncLabel(t);
+      });
+      markUnsaved();
+    });
+  };
+
+  function syncEmailToggleColor(input, track, color) {
+    track.style.background = input.checked ? color : '';
+  }
+
+  /* ── CleverTap callbacks (global) ── */
+
+  window.wzrk_email_fetched = function(emailStr, profile) {
+    // Populate header
+    if (emailStr) {
+      document.getElementById('headerEmail').textContent = emailStr;
+      document.getElementById('headerAvatar').textContent = emailStr.charAt(0).toUpperCase();
+      document.getElementById('ct-email').value = emailStr;
+    }
+
+    if (!profile || !profile.groups || profile.groups.length === 0) {
+      document.getElementById('emailLoading').innerHTML =
+        '<span style="color:var(--text-3)">No subscription groups found for this account.</span>';
+      return;
+    }
+
+    $WZRK_WR.setSubscriptionGroups(profile.groups);
+    $WZRK_WR.setUpdatedCategoryLong(profile);
+    window.renderEmailGroups(profile.groups);
+    markUnsaved(); // reset to clean state after load
+    markSaved();
+  };
+
+  window.wzrk_email_subscription = function(status) {
+    // status 0 = unsubscribed, status 1 = subscribed
+    var msg = status === 0
+      ? 'Email preferences updated — some brands unsubscribed.'
+      : 'Email preferences saved successfully.';
+    showToast(msg, 'success');
+    markSaved();
+  };
+
+  /* ── Gather email groups and send to CleverTap ── */
+  function submitEmailGroups() {
+    var inputs = Array.prototype.slice.call(document.querySelectorAll('[data-group="email"]'));
+    if (!inputs.length) return true; // no groups loaded yet — skip email call
+
+    var updated = inputs.map(function(input) {
+      return {
+        name: input.getAttribute('data-name'),
+        isUnsubscribed: !input.checked  // ON toggle = subscribed = NOT unsubscribed
+      };
+    });
+
+    $WZRK_WR.changeSubscriptionGroups(false, updated);
+    return false; // async — wzrk_email_subscription fires the final UI update
+  }
+
+  /* ── Save ── */
+  var unsaved = false;
+  var saveHint = document.getElementById('saveHint');
+  var saveBtn  = document.getElementById('saveBtn');
+
+  function markUnsaved() {
+    unsaved = true;
+    saveBtn.textContent = 'Save Preferences';
+    saveBtn.classList.remove('saved');
+    saveBtn.disabled = false;
+    saveHint.innerHTML = '<strong>You have unsaved changes.</strong> Save to apply your preferences.';
+  }
+
+  function markSaved() {
+    unsaved = false;
+    saveBtn.textContent = 'Saved';
+    saveBtn.classList.add('saved');
+    saveBtn.disabled = false;
+    saveHint.innerHTML = 'Your preferences have been <strong>saved successfully.</strong>';
+  }
+
+  saveBtn.addEventListener('click', function() {
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving…';
+
+    var emailAsync = submitEmailGroups();
+    // If no email groups loaded, resolve immediately
+    if (emailAsync) {
+      setTimeout(function() { markSaved(); }, 600);
+    }
+    // Otherwise wzrk_email_subscription handles the final state
+  });
+
+  /* ── Toast ── */
+  var toastEl   = document.getElementById('toast');
+  var toastTimer;
+
+  function showToast(msg, type) {
+    toastEl.textContent  = msg;
+    toastEl.className    = 'toast' + (type ? ' ' + type : '');
+    void toastEl.offsetWidth;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() { toastEl.classList.remove('show'); }, 3500);
+  }
+
+  /* ── Helper ── */
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  /* ── CleverTap init on load ── */
+  window.onload = function() {
+    if (window.$WZRK_WR) {
+      $WZRK_WR.getEmail(false, true); // false = no re-encode, true = include groups
+    } else {
+      document.getElementById('emailLoading').innerHTML =
+        '<span style="color:var(--text-3)">CleverTap SDK not available — check your network connection.</span>';
+    }
+  };
+
+})();
+</script>
+
+</body>
+</html>
