@@ -3,616 +3,148 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DealPop – Discover Deals & Catalogues</title>
+  <title>Demo Store – Shop Electronics, Fashion, Home & More</title>
 
-  <!--
-    🔹 CleverTap Visual Editor prerequisites
-    Visual Editor support requires Web SDK v1.13.1+ and these security headers.
-    NOTE: `frame-ancestors` is ignored when set via <meta> per the CSP spec — for
-    production, set the headers below as HTTP response headers on your web server
-    or CDN. GitHub Pages cannot serve custom headers, so on github.io the meta
-    fallbacks are best-effort only.
-  -->
+  <!-- CleverTap Visual Editor prerequisites (best-effort via meta; set as HTTP headers in production) -->
   <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self' https://*.clevertap.com https://*.clevertap-prod.com">
   <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin-allow-popups">
   <meta http-equiv="Cross-Origin-Embedder-Policy" content="unsafe-none">
 
   <style>
     :root {
-      --primary: #6366F1;
-      --primary-dark: #4F46E5;
-      --primary-soft: #EEF2FF;
-      --accent: #F43F5E;
-      --accent-soft: #FFE4E6;
-      --text: #0F172A;
-      --muted: #64748B;
-      --bg: #F8FAFC;
+      --primary: #2563EB;
+      --primary-dark: #1D4ED8;
+      --primary-soft: #EFF6FF;
+      --accent: #F97316;
+      --text: #111827;
+      --muted: #6B7280;
+      --bg: #F3F4F6;
       --card: #FFFFFF;
-      --border: #E2E8F0;
-      --success: #10B981;
-      --success-soft: #ECFDF5;
-      --warning: #F59E0B;
-      --warning-soft: #FEF3C7;
+      --border: #E5E7EB;
+      --success: #059669;
+      --danger: #DC2626;
     }
     * { box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background: var(--bg); color: var(--text); }
+    a { color: var(--primary); text-decoration: none; cursor: pointer; }
+    button { font-family: inherit; }
 
-    /* Top promo bar */
-    .promo-bar {
-      background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
-      color: #fff;
-      text-align: center;
-      padding: 12px 16px;
-      font-weight: 600;
-      letter-spacing: 0.3px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    .promo-bar span { font-weight: 800; }
+    .topbar { background: #111827; color: #D1D5DB; font-size: 13px; text-align: center; padding: 8px 12px; }
+    .topbar b { color: #fff; }
 
-    /* Header */
-    .header {
-      background: var(--card);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 28px;
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--text);
-      cursor: pointer;
-    }
-    .logo-mark {
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      color: #fff;
-      width: 32px;
-      height: 32px;
-      border-radius: 9px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      font-weight: 800;
-    }
-    .nav {
-      display: flex;
-      gap: 6px;
-      margin-left: 12px;
-    }
-    .nav-item {
-      padding: 8px 14px;
-      cursor: pointer;
-      font-size: 15px;
-      color: var(--muted);
-      border-radius: 8px;
-      font-weight: 500;
-    }
-    .nav-item:hover { background: var(--primary-soft); color: var(--primary); }
-    .search {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 10px 16px;
-      gap: 10px;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .search:focus-within {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px var(--primary-soft);
-    }
-    .search input {
-      flex: 1;
-      border: 0;
-      background: transparent;
-      font-size: 15px;
-      outline: none;
-      color: var(--text);
-    }
-    .location {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 15px;
-      cursor: pointer;
-      color: var(--muted);
-      font-weight: 500;
-    }
-    .push-btn {
-      background: var(--primary-soft);
-      color: var(--primary);
-      border: 0;
-      padding: 10px 18px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .push-btn:hover { background: #E0E7FF; }
-    .app-btn {
-      background: var(--text);
-      color: #fff;
-      border: 0;
-      padding: 10px 20px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    .app-btn:hover { background: #1E293B; }
-
-    /* Notification bell */
-    .bell {
-      position: relative;
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: var(--text);
-      transition: border-color 0.15s, background 0.15s;
-    }
-    .bell:hover { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }
-    .bell-badge {
-      position: absolute;
-      top: -2px;
-      right: -2px;
-      min-width: 18px;
-      height: 18px;
-      padding: 0 5px;
-      background: var(--accent);
-      color: #fff;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 700;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      border: 2px solid var(--card);
-    }
+    .header { background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
+    .header-row { max-width: 1200px; margin: 0 auto; padding: 14px 20px; display: flex; align-items: center; gap: 18px; }
+    .logo { font-size: 22px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+    .logo i { font-style: normal; background: var(--primary); color: #fff; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; }
+    .search { flex: 1; display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--bg); }
+    .search input { flex: 1; border: 0; background: transparent; padding: 10px 14px; font-size: 14px; outline: none; }
+    .search button { border: 0; background: var(--primary); color: #fff; padding: 0 18px; cursor: pointer; font-weight: 600; }
+    .hdr-actions { display: flex; align-items: center; gap: 6px; }
+    .hbtn { background: none; border: 0; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text); position: relative; display: inline-flex; align-items: center; gap: 6px; }
+    .hbtn:hover { background: var(--bg); }
+    .cart-count { background: var(--accent); color: #fff; border-radius: 999px; font-size: 11px; padding: 1px 7px; font-weight: 700; }
+    .bell-badge { position: absolute; top: 2px; right: 2px; min-width: 16px; height: 16px; padding: 0 4px; background: var(--danger); color: #fff; border-radius: 999px; font-size: 10px; font-weight: 700; display: none; align-items: center; justify-content: center; }
     .bell-badge.show { display: inline-flex; }
+    .catnav { max-width: 1200px; margin: 0 auto; padding: 0 20px 10px; display: flex; gap: 4px; overflow-x: auto; }
+    .catnav a { color: var(--muted); font-size: 14px; font-weight: 600; padding: 6px 12px; border-radius: 6px; white-space: nowrap; }
+    .catnav a:hover, .catnav a.active { background: var(--primary-soft); color: var(--primary); }
 
-    .container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 32px 28px 60px;
-    }
+    main { max-width: 1200px; margin: 0 auto; padding: 24px 20px 60px; min-height: 60vh; }
+    h1.page-title { font-size: 26px; margin: 0 0 18px; }
+    .crumbs { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
 
-    /* Hero */
-    .hero {
-      background: linear-gradient(135deg, var(--primary) 0%, #8B5CF6 60%, var(--accent) 100%);
-      color: #fff;
-      padding: 36px 36px;
-      border-radius: 20px;
-      margin-bottom: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-      box-shadow: 0 10px 40px rgba(99,102,241,0.25);
-    }
-    .hero h1 {
-      margin: 0 0 8px;
-      font-size: 30px;
-      font-weight: 800;
-    }
-    .hero p {
-      margin: 0;
-      opacity: 0.92;
-      font-size: 15px;
-    }
-    .hero-cta {
-      background: #fff;
-      color: var(--primary);
-      border: 0;
-      padding: 12px 22px;
-      border-radius: 10px;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 15px;
-      white-space: nowrap;
-    }
+    .hero { background: linear-gradient(120deg, #1E3A8A, #2563EB 60%, #38BDF8); color: #fff; border-radius: 16px; padding: 44px 40px; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+    .hero h1 { margin: 0 0 10px; font-size: 34px; }
+    .hero p { margin: 0 0 20px; opacity: .92; max-width: 460px; }
+    .hero .emoji { font-size: 90px; }
 
-    /* Section heading */
-    .section-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      margin: 32px 0 18px;
-    }
-    .section-head h2 {
-      font-size: 22px;
-      margin: 0;
-      font-weight: 800;
-    }
-    .pill-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 8px 14px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 13px;
-      color: var(--text);
-    }
-    .pill-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .btn { border: 0; border-radius: 8px; padding: 11px 20px; font-weight: 700; font-size: 14px; cursor: pointer; }
+    .btn-primary { background: var(--primary); color: #fff; } .btn-primary:hover { background: var(--primary-dark); }
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-light { background: #fff; color: var(--primary); }
+    .btn-ghost { background: var(--card); border: 1px solid var(--border); color: var(--text); }
+    .btn-block { width: 100%; }
 
-    /* Stores grid */
-    .stores {
-      display: grid;
-      grid-template-columns: repeat(10, 1fr);
-      gap: 12px;
-    }
-    .store-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 16px 8px 12px;
-      text-align: center;
-      cursor: pointer;
-      position: relative;
-      transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
-    }
-    .store-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(15,23,42,0.08);
-      border-color: var(--primary);
-    }
-    .store-card img {
-      width: 60px;
-      height: 60px;
-      object-fit: contain;
-      border-radius: 10px;
-    }
-    .store-card .count {
-      margin-top: 8px;
-      font-size: 12px;
-      color: var(--muted);
-      font-weight: 500;
-    }
-    .heart {
-      position: absolute;
-      top: 8px;
-      right: 10px;
-      color: #CBD5E1;
-      font-size: 18px;
-      cursor: pointer;
-      user-select: none;
-    }
-    .heart.active { color: var(--accent); }
-    .store-card.all {
-      background: var(--primary-soft);
-      border-color: transparent;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    .store-card.all .all-icon {
-      width: 60px; height: 60px;
-      background: var(--primary);
-      color: #fff;
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 26px;
-    }
-    .store-card.all .count {
-      font-weight: 600;
-      color: var(--primary);
-    }
+    .section-title { display: flex; justify-content: space-between; align-items: baseline; margin: 34px 0 14px; }
+    .section-title h2 { margin: 0; font-size: 20px; }
 
-    /* Leaflets grid */
-    .leaflets {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 20px;
-    }
-    .leaflet {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.15s;
-      display: flex;
-      flex-direction: column;
-    }
-    .leaflet:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 14px 32px rgba(15,23,42,0.1);
-    }
-    .badge {
-      text-align: center;
-      padding: 8px;
-      font-weight: 700;
-      font-size: 12px;
-      letter-spacing: 0.3px;
-      text-transform: uppercase;
-    }
-    .badge.ending { background: var(--accent-soft); color: var(--accent); }
-    .badge.current { background: var(--success-soft); color: var(--success); }
-    .badge.future  { background: var(--warning-soft); color: var(--warning); }
+    .cats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+    .cat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 22px 10px; text-align: center; cursor: pointer; transition: .15s; }
+    .cat-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.07); }
+    .cat-card .ic { font-size: 38px; } .cat-card div:last-child { font-weight: 700; margin-top: 8px; font-size: 14px; }
 
-    .leaflet-cover {
-      width: 100%;
-      aspect-ratio: 3 / 4;
-      object-fit: cover;
-      display: block;
-      background: var(--bg);
-    }
-    .leaflet-meta {
-      padding: 14px 16px 18px;
-    }
-    .leaflet-meta h3 {
-      margin: 0 0 4px;
-      font-size: 16px;
-      font-weight: 700;
-    }
-    .leaflet-meta p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    .pcard { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; cursor: pointer; display: flex; flex-direction: column; transition: .15s; }
+    .pcard:hover { box-shadow: 0 8px 22px rgba(0,0,0,.09); transform: translateY(-2px); }
+    .pimg { height: 170px; display: flex; align-items: center; justify-content: center; font-size: 72px; }
+    .pbody { padding: 14px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+    .pcat { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; font-weight: 600; }
+    .pname { font-weight: 600; font-size: 15px; }
+    .rating { font-size: 12px; color: #F59E0B; } .rating span { color: var(--muted); }
+    .price { font-size: 18px; font-weight: 800; } .price s { color: var(--muted); font-weight: 400; font-size: 13px; margin-left: 6px; }
+    .off { color: var(--success); font-size: 12px; font-weight: 700; margin-left: 6px; }
+    .pcard .btn { margin-top: auto; }
 
-    /* Detail view */
-    .detail-view {
-      display: none;
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 24px 28px 60px;
-    }
-    .detail-view.show { display: block; }
-    .back-btn {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 9px 16px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 14px;
-      margin-bottom: 20px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--text);
-    }
-    .back-btn:hover { border-color: var(--primary); color: var(--primary); }
-    .detail-grid {
-      display: grid;
-      grid-template-columns: 1fr 1.3fr;
-      gap: 36px;
-    }
-    .detail-cover {
-      width: 100%;
-      border-radius: 18px;
-      box-shadow: 0 14px 40px rgba(15,23,42,0.15);
-    }
-    .detail-info h1 {
-      font-size: 30px;
-      margin: 12px 0 8px;
-      font-weight: 800;
-    }
-    .detail-store {
-      color: var(--primary);
-      background: var(--primary-soft);
-      display: inline-block;
-      padding: 5px 14px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.4px;
-      text-transform: uppercase;
-    }
-    .detail-validity {
-      color: var(--muted);
-      margin: 8px 0 22px;
-      font-size: 14px;
-    }
-    .detail-validity strong {
-      color: var(--success);
-      font-weight: 700;
-    }
-    .detail-actions {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 28px;
-      flex-wrap: wrap;
-    }
-    .detail-actions button {
-      padding: 11px 20px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--card);
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 14px;
-      color: var(--text);
-    }
-    .detail-actions button:hover { border-color: var(--primary); color: var(--primary); }
-    .detail-actions button.primary {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: #fff;
-    }
-    .detail-actions button.primary:hover { background: var(--primary-dark); color: #fff; }
-    .detail-products h3 {
-      margin: 24px 0 12px;
-      font-size: 17px;
-    }
-    .products-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-    .product-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px;
-      display: flex;
-      gap: 12px;
-      cursor: pointer;
-      transition: transform 0.15s, border-color 0.15s;
-      align-items: center;
-    }
-    .product-card:hover { transform: translateY(-2px); border-color: var(--primary); }
-    .product-card img {
-      width: 70px;
-      height: 70px;
-      object-fit: contain;
-      background: var(--bg);
-      border-radius: 10px;
-    }
-    .product-card .pname { font-weight: 600; font-size: 14px; }
-    .product-card .pprice { color: var(--accent); font-weight: 800; margin-top: 4px; font-size: 16px; }
+    .perks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 34px; }
+    .perk { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; font-size: 14px; } .perk b { display: block; margin-bottom: 4px; }
 
-    /* Store detail */
-    .store-detail-header {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      background: var(--card);
-      padding: 24px;
-      border-radius: 16px;
-      margin-bottom: 28px;
-      border: 1px solid var(--border);
-    }
-    .store-detail-header img {
-      width: 90px;
-      height: 90px;
-      object-fit: contain;
-      border-radius: 14px;
-      background: var(--bg);
-      padding: 8px;
-    }
-    .store-detail-header h1 { margin: 0; font-size: 26px; font-weight: 800; }
-    .store-detail-header p { margin: 4px 0 0; color: var(--muted); }
+    .pdp { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; }
+    .pdp .pimg { height: 380px; border-radius: 12px; font-size: 150px; }
+    .pdp h1 { margin: 6px 0 10px; font-size: 28px; }
+    .pdp .price { font-size: 30px; margin: 14px 0; }
+    .pdp p { color: var(--muted); line-height: 1.6; }
+    .qty { display: inline-flex; align-items: center; border: 1px solid var(--border); border-radius: 8px; }
+    .qty button { border: 0; background: none; width: 32px; height: 34px; font-size: 18px; cursor: pointer; }
+    .qty span { min-width: 28px; text-align: center; font-weight: 600; }
 
-    /* Login FAB + Modal */
-    .login-fab {
-      position: fixed;
-      bottom: 22px;
-      right: 22px;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      color: #fff;
-      padding: 14px 22px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-weight: 600;
-      z-index: 99;
-      box-shadow: 0 8px 20px rgba(99,102,241,0.35);
-    }
-    .modal-bg {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(15,23,42,0.55);
-      align-items: center;
-      justify-content: center;
-      z-index: 200;
-    }
-    .modal-bg.show { display: flex; }
-    .modal {
-      background: var(--card);
-      width: 380px;
-      padding: 28px;
-      border-radius: 18px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-    }
-    .modal h2 { margin-top: 0; font-weight: 800; }
-    .modal input {
-      width: 100%;
-      padding: 12px 14px;
-      margin: 6px 0;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font-size: 15px;
-      outline: none;
-    }
-    .modal input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
-    .modal-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 14px;
-    }
-    .modal-actions button {
-      flex: 1;
-      padding: 12px;
-      border-radius: 10px;
-      border: 0;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    .btn-primary { background: var(--primary); color: #fff; }
-    .btn-primary:hover { background: var(--primary-dark); }
-    .btn-secondary { background: var(--bg); color: var(--text); }
+    .form-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; max-width: 440px; margin: 20px auto; }
+    .form-card h1 { margin: 0 0 6px; font-size: 24px; } .form-card .sub { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+    label { display: block; font-size: 13px; font-weight: 600; margin: 12px 0 5px; }
+    input[type=text], input[type=email], input[type=tel], input[type=password], select, textarea { width: 100%; padding: 11px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: inherit; outline: none; background: #fff; }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+    .err { color: var(--danger); font-size: 13px; margin-top: 10px; min-height: 16px; }
+    .alt { text-align: center; font-size: 14px; color: var(--muted); margin-top: 16px; }
 
-    /* Toast */
-    .toast {
-      position: fixed;
-      bottom: 90px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--text);
-      color: #fff;
-      padding: 11px 22px;
-      border-radius: 999px;
-      font-size: 14px;
-      opacity: 0;
-      transition: opacity 0.3s;
-      pointer-events: none;
-      z-index: 300;
-      font-weight: 500;
-    }
+    .checkout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; align-items: start; }
+    .panel { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 22px; }
+    .panel h2 { margin: 0 0 6px; font-size: 18px; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .tag { display: inline-block; background: var(--primary-soft); color: var(--primary); border-radius: 6px; font-size: 12px; font-weight: 700; padding: 3px 9px; }
+    .sum-line { display: flex; justify-content: space-between; font-size: 14px; padding: 6px 0; }
+    .sum-line.total { border-top: 1px solid var(--border); margin-top: 8px; padding-top: 12px; font-size: 18px; font-weight: 800; }
+    .mini { display: flex; gap: 12px; align-items: center; padding: 8px 0; font-size: 14px; }
+    .mini .em { font-size: 28px; width: 46px; height: 46px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .mini .grow { flex: 1; }
+
+    .drawer-bg { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 100; display: none; }
+    .drawer-bg.show { display: block; }
+    .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 400px; max-width: 100%; background: #fff; z-index: 101; transform: translateX(100%); transition: transform .25s; display: flex; flex-direction: column; }
+    .drawer.show { transform: none; }
+    .drawer-head { padding: 18px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 18px; }
+    .drawer-body { flex: 1; overflow-y: auto; padding: 8px 20px; }
+    .drawer-foot { padding: 16px 20px; border-top: 1px solid var(--border); }
+    .x { background: none; border: 0; font-size: 22px; cursor: pointer; color: var(--muted); }
+    .empty { text-align: center; color: var(--muted); padding: 50px 10px; }
+    .rm { color: var(--danger); font-size: 12px; cursor: pointer; background: none; border: 0; padding: 0; }
+
+    .success { text-align: center; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 44px 24px; max-width: 560px; margin: 20px auto; }
+    .success .big { font-size: 60px; }
+
+    footer { background: #111827; color: #9CA3AF; text-align: center; padding: 26px; font-size: 13px; }
+    .toast { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); background: #111827; color: #fff; padding: 11px 22px; border-radius: 999px; font-size: 14px; opacity: 0; transition: opacity .25s; pointer-events: none; z-index: 300; }
     .toast.show { opacity: 1; }
 
-    @media (max-width: 1100px) {
-      .stores { grid-template-columns: repeat(5, 1fr); }
-      .leaflets { grid-template-columns: repeat(3, 1fr); }
-      .detail-grid { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 720px) {
-      .header { flex-wrap: wrap; padding: 12px; }
-      .nav { order: 4; width: 100%; justify-content: space-around; }
-      .search { order: 3; width: 100%; }
-      .hero { flex-direction: column; text-align: center; }
-      .stores { grid-template-columns: repeat(3, 1fr); }
-      .leaflets { grid-template-columns: repeat(2, 1fr); }
-      .products-grid { grid-template-columns: 1fr; }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: repeat(2, 1fr); } .cats { grid-template-columns: repeat(3, 1fr); }
+      .pdp, .checkout { grid-template-columns: 1fr; } .perks { grid-template-columns: 1fr; }
+      .header-row { flex-wrap: wrap; } .search { order: 3; flex-basis: 100%; }
+      .hero { flex-direction: column; text-align: center; padding: 30px 20px; } .hero .emoji { font-size: 60px; }
     }
   </style>
 
   <!-- CleverTap SDK -->
   <script type="text/javascript">
-    var clevertap = { event: [], profile: [], account: [], onUserLogin: [], notifications: [], privacy: []};
+    var clevertap = { event: [], profile: [], account: [], onUserLogin: [], notifications: [], privacy: [] };
     clevertap.account.push({ "id": "654-Z9R-646Z" });
     clevertap.region = "eu1";
     clevertap.privacy.push({ optOut: false });
@@ -623,7 +155,8 @@
       var wzrk = document.createElement('script');
       wzrk.type = 'text/javascript';
       wzrk.async = true;
- wzrk.src = ('https:' == document.location.protocol ? 'https://d2r1yp2w7bby2u.cloudfront.net' : 'http://static.clevertap.com') + '/js/clevertap.min.js';      var s = document.getElementsByTagName('script')[0];
+      wzrk.src = ('https:' == document.location.protocol ? 'https://d2r1yp2w7bby2u.cloudfront.net' : 'http://static.clevertap.com') + '/js/clevertap.min.js';
+      var s = document.getElementsByTagName('script')[0];
       s.parentNode.insertBefore(wzrk, s);
     })();
 
@@ -632,551 +165,518 @@
 </head>
 
 <body>
-
-  <div class="promo-bar" onclick="trackEvent('Promo Bar Clicked', { promo_name: 'DealPop Weekly Giveaway' })">
-    🎁 <span>DEALPOP WEEKLY GIVEAWAY</span> — Win a $500 shopping spree. Tap to enter!
-  </div>
+  <div class="topbar">🚚 <b>Free shipping</b> on orders over $100 · Use code <b>WELCOME10</b> (demo)</div>
 
   <header class="header">
-    <div class="logo" onclick="goHome()">
-      <span class="logo-mark">D</span>
-      <span>DealPop</span>
+    <div class="header-row">
+      <div class="logo" onclick="go('/')"><i>D</i> Demo Store</div>
+      <div class="search">
+        <input id="searchInput" type="text" placeholder="Search products…" onkeydown="if(event.key==='Enter')doSearch()">
+        <button onclick="doSearch()">Search</button>
+      </div>
+      <div class="hdr-actions">
+        <button class="hbtn" onclick="enablePush()" title="Enable push">🔔 Push</button>
+        <button class="hbtn" id="notification_bell" title="Notifications">
+          ✉️<span id="notification_bell_badge" class="bell-badge">0</span>
+        </button>
+        <span id="authArea"></span>
+        <button class="hbtn" onclick="openCart()">🛒 Cart <span class="cart-count" id="cartCount">0</span></button>
+      </div>
     </div>
-    <nav class="nav">
-      <div class="nav-item" onclick="trackEvent('Nav Clicked', { item: 'Stores' })">Stores ▾</div>
-      <div class="nav-item" onclick="trackEvent('Nav Clicked', { item: 'Products' })">Products ▾</div>
-      <div class="nav-item" onclick="trackEvent('Nav Clicked', { item: 'Categories' })">Categories ▾</div>
-    </nav>
-    <div class="search">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input id="searchInput" type="text" placeholder="Search DealPop e.g. milk, eggs, electronics" onkeydown="handleSearch(event)" />
-    </div>
-    <div class="location" onclick="trackEvent('Location Clicked', { city: 'Mumbai' })">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-      Mumbai
-    </div>
-    <button class="push-btn" onclick="enablePush()">🔔 Enable Push</button>
-    <div id="notification_bell"  title="Notifications">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-      </svg>
-      <span id="notification_bell_badge" class="bell-badge">0</span>
-    </div>
-    <button class="app-btn" onclick="trackEvent('App Download Clicked', { source: 'header' })">Get the app</button>
+    <nav class="catnav" id="catNav"></nav>
   </header>
 
-  <!-- HOME VIEW -->
-  <div class="container" id="homeView">
+  <main id="app"></main>
 
-    <div class="hero" id="heroBanner">
-      <div>
-        <h1 id="heroTitle">Today's best deals, all in one place</h1>
-        <p id="heroBody">Browse the latest catalogues from your favourite stores. Save offers, share with friends, never miss a price drop.</p>
-      </div>
-      <button class="hero-cta" id="heroCta" onclick="onHeroCtaClick()">Explore Deals →</button>
-    </div>
+  <footer>© 2026 Demo Store · A demo website for CleverTap integration testing. No real payments are processed.</footer>
 
-    <div class="section-head">
-      <h2>Popular Stores</h2>
-      <button class="pill-btn" onclick="trackEvent('Select Stores Clicked', {})">
-        Choose stores ›
-      </button>
-    </div>
-
-    <div class="stores" id="storesGrid"></div>
-
-    <div class="section-head" style="margin-top: 40px;">
-      <h2>Latest Catalogues</h2>
-      <button class="pill-btn" onclick="trackEvent('View All Catalogues Clicked', {})">View all ›</button>
-    </div>
-
-    <div class="leaflets" id="leafletsGrid"></div>
-  </div>
-
-  <!-- LEAFLET DETAIL VIEW -->
-  <div class="detail-view" id="leafletDetail"></div>
-
-  <!-- STORE DETAIL VIEW -->
-  <div class="detail-view" id="storeDetail"></div>
-
-  <!-- Floating login -->
-  <div class="login-fab" onclick="openLogin()">👤 Login</div>
-
-  <!-- Login modal -->
-  <div class="modal-bg" id="loginModal">
-    <div class="modal">
-      <h2>Sign in to DealPop</h2>
-      <input type="text" id="identity" placeholder="Identity (e.g., user123)" />
-      <input type="email" id="email" placeholder="Email" />
-      <input type="text" id="name" placeholder="Name" />
-      <div class="modal-actions">
-        <button class="btn-secondary" onclick="closeLogin()">Cancel</button>
-        <button class="btn-primary" onclick="handleUserLogin()">Sign in</button>
-      </div>
-      <div style="margin-top: 14px; display: flex; gap: 8px;">
-        <button class="btn-secondary" style="flex:1; padding:10px; border:0; border-radius:10px; cursor:pointer;" onclick="enablePush()">Enable Push</button>
-        <button class="btn-secondary" style="flex:1; padding:10px; border:0; border-radius:10px; cursor:pointer;" onclick="trackProductViewed()">Track Product Viewed</button>
-      </div>
-    </div>
-  </div>
+  <div class="drawer-bg" id="drawerBg" onclick="closeCart()"></div>
+  <aside class="drawer" id="drawer">
+    <div class="drawer-head">Your cart <button class="x" onclick="closeCart()">×</button></div>
+    <div class="drawer-body" id="drawerBody"></div>
+    <div class="drawer-foot" id="drawerFoot"></div>
+  </aside>
 
   <div class="toast" id="toast"></div>
 
   <script>
-     clevertap.notifications.push({
-        titleText: 'Would you like to receive Push Notifications?',
-        bodyText: 'We promise to only send you relevant content and give you updates on your transactions',
-        okButtonText: 'Sign me up!',
-        rejectButtonText: 'No thanks',
-        okButtonColor: '#F28046'
-      });
     // ───────── Data ─────────
-    const stores = [
-      { id: 'biedronka',   name: 'Biedronka',    count: 21, logo: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/retailers-logos/d30f9b55-1aaa-44e2-8e2c-e9883e17b70a&f=webp&w=100' },
-      { id: 'lidl',        name: 'Lidl',         count: 8,  logo: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/retailers-logos/67331532-81bb-41ef-be67-44bc5120af72&f=webp&w=100' },
-      { id: 'kaufland',    name: 'Kaufland',     count: 8,  logo: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/retailers-logos/19e9b9c7-7144-4698-9437-77dcddabcf85&f=webp&w=100' },
-      { id: 'intermarche', name: 'Intermarche',  count: 4,  logo: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/retailers-logos/29e8021e-e950-44eb-83f6-798375b60db8&f=webp&w=100' },
-      { id: 'netto',       name: 'Netto',        count: 7,  logo: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/retailers-logos/918407f6-ae88-4071-80ae-5a100aa1b9cb&f=webp&w=100' },
-      { id: 'pepco',       name: 'Pepco',        count: 3,  logo: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/retailers-logos/ced1ad91-36b2-4665-8651-964c6b2f023d&f=webp&w=100' },
-      { id: 'dino',        name: 'Dino',         count: 2,  logo: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/retailers-logos/2a6832bf-1aef-4a60-9ab7-351d3be0ad85&f=webp&w=100' },
-      { id: 'action',      name: 'Action',       count: 4,  logo: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/retailers-logos/4cb2b784-be1c-418e-a90d-c214a555a31a&f=webp&w=100' },
-      { id: 'aldi',        name: 'Aldi',         count: 11, logo: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/retailers-logos/ed787966-eab9-4c9d-8d1c-7ffd49166e3e&f=webp&w=100' },
+    const categories = [
+      { id: 'electronics', name: 'Electronics',    icon: '🎧', bg: '#DBEAFE' },
+      { id: 'fashion',     name: 'Fashion',        icon: '👟', bg: '#FCE7F3' },
+      { id: 'home',        name: 'Home & Kitchen', icon: '☕', bg: '#FEF3C7' },
+      { id: 'beauty',      name: 'Beauty',         icon: '🧴', bg: '#EDE9FE' },
+      { id: 'sports',      name: 'Sports',         icon: '🏀', bg: '#DCFCE7' },
     ];
-
-    const sampleProducts = [
-      { name: 'Dove Lavender & Camomile Cream Deo', price: '$3.49', img: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspaperProducts/019e3b23-e198-719f-b000-d17a68d92e73/dovewholebodydeo_LavenderCamomile_dezodorantwkremie1.png&q=60&f=webp&w=700' },
-      { name: 'Dove Lavender & Camomile Spray',     price: '$4.29', img: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspaperProducts/019e3b26-692c-737a-850d-f051a43aa441/dovewholebodydeo_LavenderCamomile__dezodorantwsprayu1.png&q=60&f=webp&w=700' },
-      { name: 'Dove Raspberry & Rose Cream',        price: '$3.99', img: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspaperProducts/019e3b2a-8c9d-72b8-bee6-ba6302701755/DovewholebodydeoRossberyRoseDezodorantwkremie1.png&q=60&f=webp&w=700' },
-      { name: 'Dove Original Cream',                price: '$2.99', img: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspaperProducts/019e3b2b-266f-723f-9c4e-fb8608eb1563/DovewholebodydeoOriginalDezodorantwkremie1.png&q=60&f=webp&w=700' },
+    const products = [
+      { id: 'p1',  cat: 'electronics', name: 'Wireless Noise-Cancelling Headphones', icon: '🎧', price: 129.99, mrp: 179.99, rating: 4.6, reviews: 1280, desc: 'Over-ear Bluetooth headphones with active noise cancellation and 30-hour battery life.' },
+      { id: 'p2',  cat: 'electronics', name: 'Smart Watch Series 5',                 icon: '⌚', price: 199.00, mrp: 249.00, rating: 4.4, reviews: 860,  desc: 'Track workouts, heart rate and sleep with a bright always-on AMOLED display.' },
+      { id: 'p3',  cat: 'electronics', name: 'Portable Bluetooth Speaker',           icon: '🔊', price: 49.99,  mrp: 69.99,  rating: 4.3, reviews: 540,  desc: 'Waterproof speaker with deep bass and 12 hours of playtime.' },
+      { id: 'p4',  cat: 'electronics', name: 'Mirrorless Camera Kit',                icon: '📷', price: 649.00, mrp: 799.00, rating: 4.7, reviews: 310,  desc: '24MP mirrorless camera with 18-55mm lens, 4K video and Wi-Fi sharing.' },
+      { id: 'p5',  cat: 'fashion',     name: 'Classic Running Sneakers',             icon: '👟', price: 79.00,  mrp: 110.00, rating: 4.5, reviews: 2210, desc: 'Lightweight, breathable sneakers designed for everyday comfort.' },
+      { id: 'p6',  cat: 'fashion',     name: 'Leather Crossbody Bag',                icon: '👜', price: 89.50,  mrp: 120.00, rating: 4.2, reviews: 430,  desc: 'Genuine leather bag with adjustable strap and zip closure.' },
+      { id: 'p7',  cat: 'fashion',     name: 'Aviator Sunglasses',                   icon: '🕶️', price: 34.99,  mrp: 59.99,  rating: 4.1, reviews: 700,  desc: 'UV400 polarized lenses with a lightweight metal frame.' },
+      { id: 'p8',  cat: 'fashion',     name: 'Denim Jacket',                         icon: '🧥', price: 64.00,  mrp: 85.00,  rating: 4.4, reviews: 390,  desc: 'Timeless washed-denim jacket with a relaxed modern fit.' },
+      { id: 'p9',  cat: 'home',        name: 'Automatic Coffee Maker',               icon: '☕', price: 89.99,  mrp: 119.99, rating: 4.5, reviews: 980,  desc: 'Programmable 12-cup coffee maker with built-in grinder.' },
+      { id: 'p10', cat: 'home',        name: 'Non-Stick Cookware Set (10 pc)',       icon: '🍳', price: 119.00, mrp: 160.00, rating: 4.6, reviews: 1500, desc: 'Durable non-stick pots and pans, induction compatible.' },
+      { id: 'p11', cat: 'home',        name: 'Scented Soy Candle Trio',              icon: '🕯️', price: 24.99,  mrp: 34.99,  rating: 4.8, reviews: 620,  desc: 'Three hand-poured soy candles in calming lavender, vanilla and cedar.' },
+      { id: 'p12', cat: 'home',        name: 'Ergonomic Desk Lamp',                  icon: '💡', price: 39.99,  mrp: 54.99,  rating: 4.3, reviews: 270,  desc: 'LED desk lamp with 5 brightness levels and USB charging port.' },
+      { id: 'p13', cat: 'beauty',      name: 'Vitamin C Face Serum',                 icon: '🧴', price: 22.00,  mrp: 30.00,  rating: 4.4, reviews: 1800, desc: 'Brightening serum with 15% vitamin C and hyaluronic acid.' },
+      { id: 'p14', cat: 'beauty',      name: 'Matte Lipstick Collection',            icon: '💄', price: 29.99,  mrp: 45.00,  rating: 4.2, reviews: 940,  desc: 'Set of 4 long-wear matte lipsticks in everyday shades.' },
+      { id: 'p15', cat: 'sports',      name: 'Non-Slip Yoga Mat',                    icon: '🧘', price: 27.50,  mrp: 40.00,  rating: 4.5, reviews: 1120, desc: 'Extra-thick eco-friendly yoga mat with carry strap.' },
+      { id: 'p16', cat: 'sports',      name: 'Pro Basketball (Size 7)',              icon: '🏀', price: 32.00,  mrp: 45.00,  rating: 4.6, reviews: 510,  desc: 'Indoor/outdoor composite leather basketball with great grip.' },
     ];
+    const catById = id => categories.find(c => c.id === id);
+    const prodById = id => products.find(p => p.id === id);
+    const money = n => '$' + Number(n).toFixed(2);
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const SHIPPING_FREE_OVER = 100, SHIPPING_FEE = 5.99;
 
-    const leaflets = [
-      { id: 'l1', storeId: 'aldi',        store: 'Aldi',            title: 'Pick Aldi for Grilling!',         badge: 'Ends tomorrow', badgeType: 'ending',  valid: 'Fri 22 May – Sat 23 May', cover: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspapers/019e4522-987d-73b3-954d-1cca8c197a44/KW21_26_G2240_1-dopakapiateksobota11.jpg&q=40&f=webp&h=480' },
-      { id: 'l2', storeId: 'polomarket',  store: 'Polomarket',      title: 'Super Hits',                       badge: 'Ends tomorrow', badgeType: 'ending',  valid: 'Fri 22 May – Sat 23 May', cover: 'https://cdn1.promotons.com/resize?fileName=staging/gazetkowo/newspapers/019e4a35-daf4-70cf-811f-9015fdde5971/img-1.jpg&q=40&f=webp&h=480' },
-      { id: 'l3', storeId: 'netto',       store: 'Netto',           title: 'Your Garden, Full of Greenery!',   badge: 'Active',        badgeType: 'current', valid: 'Tue 7 Apr – While stocks last', cover: 'https://cdn1.promotons.com/resize?fileName=staging/gazetkowo/newspapers/019ddd98-5b91-73d9-b409-e382db38b841/img-1.jpg&q=40&f=webp&h=480' },
-      { id: 'l4', storeId: 'polomarket',  store: 'Polomarket',      title: 'Ice-cream Breakthrough',           badge: 'Active',        badgeType: 'current', valid: 'Mon 19 May – Sun 25 May', cover: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspapers/019df78f-e64f-7188-925e-fe98f1beb716/0001jpg.jpg&q=40&f=webp&h=480' },
-      { id: 'l5', storeId: 'brw',         store: 'Black Red White', title: 'Your Garden, Just the Way You Like It!', badge: 'Valid until Wed', badgeType: 'future', valid: 'Until Wed 27 May', cover: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspapers/019e202f-f8dc-72b6-902a-2f9b1310d676/gazetka-ogrod-11-270526-images-0jpg.jpg&q=40&f=webp&h=480' },
-      { id: 'l6', storeId: 'biedronka',   store: 'Biedronka',       title: 'My Cheap Weekend',                  badge: 'Active',        badgeType: 'current', valid: 'Wed 21 May – Sun 25 May', cover: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspapers/019e4b9a-e3ff-7392-a12e-7a6c7c1f0b40/Biedronka-Gazetka-2026-05-21-0.png&q=40&f=webp&h=480' },
-      { id: 'l7', storeId: 'biedronka',   store: 'Biedronka',       title: 'Hits and Inspirations from Biedronka', badge: 'Active',     badgeType: 'current', valid: 'Thu 22 May – Wed 28 May', cover: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspapers/019e4dc0-338e-732b-8f8f-79b45a584537/Biedronka-Gazetka-2026-05-22-0.png&q=40&f=webp&h=480' },
-      { id: 'l8', storeId: 'aldi',        store: 'Aldi',            title: 'Super Saturday',                    badge: 'Active',        badgeType: 'current', valid: 'Sat 24 May only', cover: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspapers/019e4068-f2de-7017-ae7b-577da1cfafd0/kw21-26-g2235-1-super-sobota-images-0jpg.jpg&q=40&f=webp&h=480' },
-      { id: 'l9', storeId: 'aldi',        store: 'Aldi',            title: "Men's Clothing at Super Prices",    badge: 'Active',        badgeType: 'current', valid: 'Mon 19 May – Sat 24 May', cover: 'https://cdn1.promotons.com/resize?fileName=production/gazetkowo/newspapers/019e3a6b-d53a-711a-b143-b9dbdf6ad68b/hiperComPage7007989.jpeg&q=40&f=webp&h=480' },
-      { id: 'l10', storeId: 'lidl',       store: 'Lidl',            title: 'Weekly Offers',                     badge: 'Active',        badgeType: 'current', valid: 'Mon 19 May – Sun 25 May', cover: 'https://cdn1.promotons.com/resize?fileName=staging/gazetkowo/newspapers/019e3846-be86-7222-9656-659a14a237d5/img-1.jpg&q=40&f=webp&h=480' },
-    ];
+    // ───────── State (persisted in localStorage) ─────────
+    function load(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch (e) { return fallback; } }
+    function save(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {} }
+    let cart = load('demo_cart', []);          // [{id, qty}]
+    let users = load('demo_users', []);        // demo-only local accounts
+    let session = load('demo_session', null);  // {name,email,phone}
 
-    // ───────── CleverTap event helper ─────────
+    // ───────── CleverTap helpers ─────────
     function trackEvent(name, props) {
       try {
-        if (window.clevertap && window.clevertap.event) {
-          window.clevertap.event.push(name, props || {});
-        }
+        if (window.clevertap && window.clevertap.event) window.clevertap.event.push(name, props || {});
         console.log('[CT event]', name, props || {});
-      } catch (e) {
-        console.warn('CT trackEvent failed', e);
-      }
+      } catch (e) { console.warn('CT trackEvent failed', e); }
     }
-
+    function ctLogin(profile) {
+      try { window.clevertap.onUserLogin.push({ Site: profile }); } catch (e) {}
+      console.log('[CT onUserLogin]', profile);
+    }
+    function productProps(p) {
+      return { product_id: p.id, product_name: p.name, category: catById(p.cat).name, price: p.price, mrp: p.mrp };
+    }
     function showToast(msg) {
       const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      clearTimeout(t._timer);
-      t._timer = setTimeout(() => t.classList.remove('show'), 1800);
+      t.textContent = msg; t.classList.add('show');
+      clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 1800);
+    }
+
+    // ───────── Cart ─────────
+    function cartTotals() {
+      const subtotal = cart.reduce((s, i) => s + prodById(i.id).price * i.qty, 0);
+      const shipping = cart.length && subtotal < SHIPPING_FREE_OVER ? SHIPPING_FEE : 0;
+      return { subtotal, shipping, total: subtotal + shipping, items: cart.reduce((s, i) => s + i.qty, 0) };
+    }
+    function addToCart(id, qty) {
+      qty = qty || 1;
+      const p = prodById(id);
+      const line = cart.find(i => i.id === id);
+      if (line) line.qty += qty; else cart.push({ id, qty });
+      save('demo_cart', cart); renderCart();
+      trackEvent('Added to Cart', { ...productProps(p), quantity: qty, cart_value: cartTotals().subtotal });
+      showToast('Added to cart');
+    }
+    function changeQty(id, delta) {
+      const line = cart.find(i => i.id === id); if (!line) return;
+      line.qty += delta;
+      if (line.qty <= 0) return removeFromCart(id);
+      save('demo_cart', cart); renderCart();
+    }
+    function removeFromCart(id) {
+      const p = prodById(id);
+      cart = cart.filter(i => i.id !== id);
+      save('demo_cart', cart); renderCart();
+      trackEvent('Removed from Cart', productProps(p));
+    }
+    function renderCart() {
+      const t = cartTotals();
+      document.getElementById('cartCount').textContent = t.items;
+      document.getElementById('drawerBody').innerHTML = cart.length ? cart.map(i => {
+        const p = prodById(i.id);
+        return `<div class="mini">
+          <div class="em" style="background:${catById(p.cat).bg}">${p.icon}</div>
+          <div class="grow"><div style="font-weight:600">${esc(p.name)}</div>
+            <div style="color:var(--muted)">${money(p.price)}</div>
+            <div style="margin-top:6px" class="qty"><button onclick="changeQty('${p.id}',-1)">−</button><span>${i.qty}</span><button onclick="changeQty('${p.id}',1)">+</button></div>
+          </div>
+          <div style="text-align:right"><b>${money(p.price * i.qty)}</b><br><button class="rm" onclick="removeFromCart('${p.id}')">Remove</button></div>
+        </div>`;
+      }).join('') : '<div class="empty"><div style="font-size:48px">🛒</div>Your cart is empty</div>';
+      document.getElementById('drawerFoot').innerHTML = cart.length ? `
+        <div class="sum-line"><span>Subtotal</span><b>${money(t.subtotal)}</b></div>
+        <button class="btn btn-primary btn-block" onclick="startCheckout()">Proceed to checkout</button>` : '';
+    }
+    function openCart() {
+      document.getElementById('drawer').classList.add('show');
+      document.getElementById('drawerBg').classList.add('show');
+      trackEvent('Cart Viewed', { item_count: cartTotals().items, cart_value: cartTotals().subtotal });
+    }
+    function closeCart() {
+      document.getElementById('drawer').classList.remove('show');
+      document.getElementById('drawerBg').classList.remove('show');
+    }
+    function startCheckout() { closeCart(); go('/checkout'); }
+
+    // ───────── Router ─────────
+    function go(path) { if (location.hash === '#' + path) route(); else location.hash = path; }
+    window.addEventListener('hashchange', route);
+
+    function route() {
+      const parts = (location.hash.slice(1) || '/').split('/').filter(Boolean);
+      const [page, arg] = parts;
+      const app = document.getElementById('app');
+      window.scrollTo(0, 0);
+      document.querySelectorAll('.catnav a').forEach(a => a.classList.toggle('active', page === 'category' && a.dataset.id === arg));
+
+      if (!page) return viewHome(app);
+      if (page === 'category') return viewCategory(app, decodeURIComponent(arg || ''));
+      if (page === 'search') return viewSearch(app, decodeURIComponent(arg || ''));
+      if (page === 'product') return viewProduct(app, arg);
+      if (page === 'checkout') return viewCheckout(app);
+      if (page === 'order') return viewOrder(app, arg);
+      if (page === 'login') return viewLogin(app);
+      if (page === 'register') return viewRegister(app);
+      viewHome(app);
+    }
+    function pageViewed(name, extra) {
+      trackEvent('Page Viewed', Object.assign({ page_name: name, url: location.href, logged_in: !!session }, extra || {}));
     }
 
     // ───────── Views ─────────
-    function showView(viewId) {
-      ['homeView', 'leafletDetail', 'storeDetail'].forEach(id => {
-        const el = document.getElementById(id);
-        if (id === viewId) {
-          el.classList.add('show');
-          el.style.display = '';
-        } else {
-          el.classList.remove('show');
-          if (id !== 'homeView') el.style.display = 'none';
-        }
-      });
-      if (viewId === 'homeView') {
-        document.getElementById('homeView').style.display = '';
-      } else {
-        document.getElementById('homeView').style.display = 'none';
-      }
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    function productCard(p) {
+      const off = Math.round((1 - p.price / p.mrp) * 100);
+      return `<div class="pcard" onclick="go('/product/${p.id}')">
+        <div class="pimg" style="background:${catById(p.cat).bg}">${p.icon}</div>
+        <div class="pbody">
+          <div class="pcat">${catById(p.cat).name}</div>
+          <div class="pname">${esc(p.name)}</div>
+          <div class="rating">★ ${p.rating} <span>(${p.reviews})</span></div>
+          <div class="price">${money(p.price)}<s>${money(p.mrp)}</s><span class="off">${off}% off</span></div>
+          <button class="btn btn-primary" onclick="event.stopPropagation();addToCart('${p.id}')">Add to cart</button>
+        </div></div>`;
     }
 
-    function goHome() {
-      showView('homeView');
-      trackEvent('Home Viewed', {});
-    }
-
-    // ───────── Render Home ─────────
-    function renderStores() {
-      const grid = document.getElementById('storesGrid');
-      grid.innerHTML = stores.map(s => `
-        <div class="store-card" onclick="openStoreDetail('${s.id}')">
-          <span class="heart" onclick="event.stopPropagation(); toggleFavorite(this, '${s.name.replace(/'/g, "\\'")}')">♡</span>
-          <img src="${s.logo}" alt="${s.name}" />
-          <div class="count">${s.count} catalogues</div>
-        </div>
-      `).join('') + `
-        <div class="store-card all" onclick="trackEvent('All Stores Clicked', {})">
-          <div class="all-icon">›</div>
-          <div class="count">All stores</div>
-        </div>
-      `;
-    }
-
-    function renderLeaflets() {
-      const grid = document.getElementById('leafletsGrid');
-      grid.innerHTML = leaflets.map((l, i) => `
-        <div class="leaflet" onclick="openLeafletDetail('${l.id}', ${i})">
-          <div class="badge ${l.badgeType}">${l.badge}</div>
-          <img class="leaflet-cover" src="${l.cover}" alt="${l.title}" loading="lazy" />
-          <div class="leaflet-meta">
-            <h3>${l.store}</h3>
-            <p>${l.title}</p>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // ───────── Leaflet detail ─────────
-    function openLeafletDetail(id, position) {
-      const l = leaflets.find(x => x.id === id);
-      if (!l) return;
-
-      trackEvent('Banner Clicked', {
-        leaflet_id: l.id,
-        position: position + 1,
-        store_name: l.store,
-        leaflet_title: l.title,
-        status: l.badge
-      });
-      trackEvent('Leaflet Detail Viewed', {
-        leaflet_id: l.id,
-        store_name: l.store,
-        leaflet_title: l.title,
-        validity: l.valid
-      });
-
-      const productsHTML = sampleProducts.map((p, i) => `
-        <div class="product-card" onclick="event.stopPropagation(); onProductClick('${l.id}', ${i})">
-          <img src="${p.img}" alt="${p.name}" />
+    function viewHome(app) {
+      app.innerHTML = `
+        <div class="hero" id="heroBanner">
           <div>
-            <div class="pname">${p.name}</div>
-            <div class="pprice">${p.price}</div>
+            <h1 id="heroTitle">Big savings on everyday essentials</h1>
+            <p id="heroBody">Shop top-rated electronics, fashion, home and more. Free shipping over $100.</p>
+            <button class="btn btn-light" id="heroCta" onclick="onHeroCtaClick()">Shop now →</button>
           </div>
+          <div class="emoji">🛍️</div>
         </div>
-      `).join('');
+        <div class="section-title"><h2>Shop by category</h2></div>
+        <div class="cats">${categories.map(c => `
+          <div class="cat-card" onclick="go('/category/${c.id}')"><div class="ic">${c.icon}</div><div>${c.name}</div></div>`).join('')}</div>
+        <div class="section-title"><h2>Featured products</h2></div>
+        <div class="grid" id="featuredGrid">${products.filter((_, i) => i % 2 === 0).slice(0, 8).map(productCard).join('')}</div>
+        <div class="perks">
+          <div class="perk"><b>🚚 Fast delivery</b>Delivered in 2–4 business days.</div>
+          <div class="perk"><b>↩️ Easy returns</b>30-day hassle-free returns.</div>
+          <div class="perk"><b>🔒 Secure checkout</b>Guest checkout available — no account needed.</div>
+        </div>`;
+      applyPendingHero();
+      pageViewed('Home');
+    }
 
-      document.getElementById('leafletDetail').innerHTML = `
-        <button class="back-btn" onclick="goHome()">‹ Back to home</button>
-        <div class="detail-grid">
+    function viewCategory(app, catId) {
+      const c = catById(catId);
+      if (!c) return go('/');
+      const list = products.filter(p => p.cat === c.id);
+      app.innerHTML = `<div class="crumbs"><a onclick="go('/')">Home</a> › ${c.name}</div>
+        <h1 class="page-title">${c.icon} ${c.name}</h1>
+        <div class="grid">${list.map(productCard).join('')}</div>`;
+      pageViewed('Category', { category: c.name });
+      trackEvent('Category Viewed', { category_id: c.id, category_name: c.name, product_count: list.length });
+    }
+
+    function doSearch() {
+      const q = document.getElementById('searchInput').value.trim();
+      if (q) go('/search/' + encodeURIComponent(q));
+    }
+    function viewSearch(app, q) {
+      const ql = q.toLowerCase();
+      const list = products.filter(p => (p.name + ' ' + catById(p.cat).name + ' ' + p.desc).toLowerCase().includes(ql));
+      app.innerHTML = `<h1 class="page-title">Results for “${esc(q)}” <span style="font-size:15px;color:var(--muted)">(${list.length})</span></h1>
+        ${list.length ? `<div class="grid">${list.map(productCard).join('')}</div>` : '<div class="empty">No products found. Try “headphones” or “yoga”.</div>'}`;
+      pageViewed('Search Results', { query: q });
+      trackEvent('Search Performed', { query: q, result_count: list.length });
+    }
+
+    let pdpQty = 1;
+    function viewProduct(app, id) {
+      const p = prodById(id);
+      if (!p) return go('/');
+      pdpQty = 1;
+      const off = Math.round((1 - p.price / p.mrp) * 100);
+      app.innerHTML = `<div class="crumbs"><a onclick="go('/')">Home</a> › <a onclick="go('/category/${p.cat}')">${catById(p.cat).name}</a> › ${esc(p.name)}</div>
+        <div class="pdp">
+          <div class="pimg" style="background:${catById(p.cat).bg}">${p.icon}</div>
           <div>
-            <img class="detail-cover" src="${l.cover}" alt="${l.title}" />
-          </div>
-          <div class="detail-info">
-            <span class="detail-store">${l.store}</span>
-            <h1>${l.title}</h1>
-            <div class="detail-validity">${l.valid} · <strong>${l.badge}</strong></div>
-            <div class="detail-actions">
-              <button class="primary" onclick="onViewLeaflet('${l.id}')">📖 View catalogue</button>
-              <button onclick="onSaveLeaflet('${l.id}')">⭐ Save</button>
-              <button onclick="onShareLeaflet('${l.id}')">↗ Share</button>
-              <button onclick="onAddToList('${l.id}')">＋ Shopping list</button>
-              <button onclick="enablePush()">🔔 Notify me</button>
-            </div>
-            <div class="detail-products">
-              <h3>Featured products</h3>
-              <div class="products-grid">${productsHTML}</div>
+            <div class="pcat">${catById(p.cat).name}</div>
+            <h1>${esc(p.name)}</h1>
+            <div class="rating">★ ${p.rating} <span>(${p.reviews} reviews)</span></div>
+            <div class="price">${money(p.price)}<s>${money(p.mrp)}</s><span class="off">${off}% off</span></div>
+            <p>${esc(p.desc)}</p>
+            <p>✔ In stock &nbsp; ✔ Free returns &nbsp; ✔ Ships in 24h</p>
+            <div style="display:flex;gap:12px;align-items:center;margin-top:18px">
+              <div class="qty"><button onclick="pdpChange(-1)">−</button><span id="pdpQty">1</span><button onclick="pdpChange(1)">+</button></div>
+              <button class="btn btn-primary" onclick="addToCart('${p.id}', pdpQty)">Add to cart</button>
+              <button class="btn btn-accent" onclick="addToCart('${p.id}', pdpQty);startCheckout()">Buy now</button>
             </div>
           </div>
         </div>
-      `;
-      showView('leafletDetail');
+        <div class="section-title"><h2>You may also like</h2></div>
+        <div class="grid">${products.filter(x => x.cat === p.cat && x.id !== p.id).slice(0, 4).map(productCard).join('')}</div>`;
+      pageViewed('Product Detail', { product_id: p.id });
+      trackEvent('Product Viewed', productProps(p));
+    }
+    function pdpChange(d) { pdpQty = Math.max(1, pdpQty + d); document.getElementById('pdpQty').textContent = pdpQty; }
+
+    // ───────── Auth ─────────
+    function renderAuth() {
+      document.getElementById('authArea').innerHTML = session
+        ? `<button class="hbtn" title="${esc(session.email)}">👤 ${esc(session.name.split(' ')[0])}</button><button class="hbtn" onclick="logout()">Logout</button>`
+        : `<button class="hbtn" onclick="go('/login')">Login</button><button class="hbtn" onclick="go('/register')" style="color:var(--primary)">Register</button>`;
+    }
+    const emailOk = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+    const phoneOk = p => /^\+[1-9]\d{7,14}$/.test(p);
+
+    function viewLogin(app) {
+      app.innerHTML = `<div class="form-card">
+        <h1>Welcome back</h1><div class="sub">Log in to your Demo Store account.</div>
+        <label>Email</label><input type="email" id="lEmail" placeholder="you@example.com">
+        <label>Password</label><input type="password" id="lPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+        <div class="err" id="lErr"></div>
+        <button class="btn btn-primary btn-block" onclick="doLogin()">Log in</button>
+        <div class="alt">New here? <a onclick="go('/register')">Create an account</a></div>
+      </div>`;
+      pageViewed('Login');
+    }
+    function doLogin() {
+      const email = document.getElementById('lEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('lPass').value;
+      const err = document.getElementById('lErr');
+      if (!emailOk(email) || !pass) { err.textContent = 'Enter a valid email and password.'; return; }
+      const u = users.find(x => x.email === email && x.pass === pass);
+      if (!u) { err.textContent = 'Invalid credentials. (Demo: register first.)'; trackEvent('Login Failed', { email }); return; }
+      session = { name: u.name, email: u.email, phone: u.phone, identity: u.identity };
+      save('demo_session', session);
+      const profile = { Identity: u.identity, Name: u.name, Email: u.email };
+      if (u.phone) profile.Phone = u.phone;
+      ctLogin(profile);
+      trackEvent('Login', { method: 'email', identity: u.identity });
+      renderAuth(); showToast('Welcome back, ' + u.name.split(' ')[0]);
+      go(cart.length ? '/checkout' : '/');
     }
 
-    function onViewLeaflet(id) {
-      const l = leaflets.find(x => x.id === id);
-      trackEvent('Leaflet Opened', { leaflet_id: id, store_name: l.store, leaflet_title: l.title });
-      showToast('Opening catalogue…');
+    function viewRegister(app) {
+      app.innerHTML = `<div class="form-card">
+        <h1>Create account</h1><div class="sub">Join Demo Store in a few seconds.</div>
+        <label>Full name</label><input type="text" id="rName" placeholder="Jane Doe">
+        <label>Email</label><input type="email" id="rEmail" placeholder="you@example.com">
+        <label>Phone (with country code)</label><input type="tel" id="rPhone" placeholder="+919876543210">
+        <label>Password</label><input type="password" id="rPass" placeholder="At least 6 characters">
+        <div class="err" id="rErr"></div>
+        <button class="btn btn-primary btn-block" onclick="doRegister()">Register</button>
+        <div class="alt">Already have an account? <a onclick="go('/login')">Log in</a></div>
+      </div>`;
+      pageViewed('Register');
     }
-    function onSaveLeaflet(id) {
-      const l = leaflets.find(x => x.id === id);
-      trackEvent('Leaflet Saved', { leaflet_id: id, store_name: l.store, leaflet_title: l.title });
-      showToast('Saved to your list');
+    function doRegister() {
+      const name = document.getElementById('rName').value.trim();
+      const email = document.getElementById('rEmail').value.trim().toLowerCase();
+      const phone = document.getElementById('rPhone').value.trim();
+      const pass = document.getElementById('rPass').value;
+      const err = document.getElementById('rErr');
+      if (!name) { err.textContent = 'Please enter your name.'; return; }
+      if (!emailOk(email)) { err.textContent = 'Please enter a valid email.'; return; }
+      if (phone && !phoneOk(phone)) { err.textContent = 'Phone must include country code, e.g. +919876543210.'; return; }
+      if (pass.length < 6) { err.textContent = 'Password must be at least 6 characters.'; return; }
+      if (users.some(u => u.email === email)) { err.textContent = 'An account with this email already exists.'; return; }
+      const identity = 'user_' + Date.now().toString(36);
+      users.push({ identity, name, email, phone, pass });
+      save('demo_users', users);
+      session = { name, email, phone, identity };
+      save('demo_session', session);
+      const profile = { Identity: identity, Name: name, Email: email };
+      if (phone) profile.Phone = phone;
+      ctLogin(profile);
+      trackEvent('Register', { method: 'email', identity, email });
+      renderAuth(); showToast('Account created. Welcome, ' + name.split(' ')[0] + '!');
+      go(cart.length ? '/checkout' : '/');
     }
-    function onShareLeaflet(id) {
-      const l = leaflets.find(x => x.id === id);
-      trackEvent('Leaflet Shared', { leaflet_id: id, store_name: l.store, leaflet_title: l.title });
-      showToast('Share link copied');
-    }
-    function onAddToList(id) {
-      const l = leaflets.find(x => x.id === id);
-      trackEvent('Added to Shopping List', { leaflet_id: id, store_name: l.store, leaflet_title: l.title });
-      showToast('Added to shopping list');
-    }
-    function onProductClick(leafletId, productIndex) {
-      const p = sampleProducts[productIndex];
-      trackEvent('Product Viewed', {
-        product_name: p.name,
-        product_price: p.price,
-        source_leaflet: leafletId
-      });
-      showToast('Product: ' + p.name);
-    }
-
-    // ───────── Store detail ─────────
-    function openStoreDetail(storeId) {
-      const s = stores.find(x => x.id === storeId);
-      if (!s) return;
-      const storeLeaflets = leaflets.filter(l => l.storeId === storeId);
-
-      trackEvent('Store Clicked', { store_id: s.id, store_name: s.name });
-      trackEvent('Store Detail Viewed', {
-        store_id: s.id,
-        store_name: s.name,
-        leaflet_count: storeLeaflets.length
-      });
-
-      const list = storeLeaflets.length
-        ? storeLeaflets.map((l, i) => `
-            <div class="leaflet" onclick="openLeafletDetail('${l.id}', ${i})">
-              <div class="badge ${l.badgeType}">${l.badge}</div>
-              <img class="leaflet-cover" src="${l.cover}" alt="${l.title}" loading="lazy" />
-              <div class="leaflet-meta">
-                <h3>${l.store}</h3>
-                <p>${l.title}</p>
-              </div>
-            </div>`).join('')
-        : `<p style="color: var(--muted);">No active catalogues for ${s.name} right now.</p>`;
-
-      document.getElementById('storeDetail').innerHTML = `
-        <button class="back-btn" onclick="goHome()">‹ Back to home</button>
-        <div class="store-detail-header">
-          <img src="${s.logo}" alt="${s.name}" />
-          <div style="flex:1;">
-            <h1>${s.name}</h1>
-            <p>${s.count} catalogues available</p>
-          </div>
-          <button class="app-btn" onclick="onFollowStore('${s.id}')">＋ Follow</button>
-        </div>
-        <h2 style="margin: 0 0 18px;">Active catalogues</h2>
-        <div class="leaflets">${list}</div>
-      `;
-      showView('storeDetail');
+    function logout() {
+      trackEvent('Logout', {});
+      session = null; save('demo_session', null);
+      renderAuth(); showToast('Logged out'); go('/');
     }
 
-    function onFollowStore(storeId) {
-      const s = stores.find(x => x.id === storeId);
-      trackEvent('Store Followed', { store_id: s.id, store_name: s.name });
-      showToast('Following ' + s.name);
-    }
-
-    // ───────── Misc ─────────
-    function toggleFavorite(el, storeName) {
-      el.classList.toggle('active');
-      const isFav = el.classList.contains('active');
-      el.textContent = isFav ? '♥' : '♡';
-      trackEvent(isFav ? 'Store Favorited' : 'Store Unfavorited', { store_name: storeName });
-    }
-
-    function handleSearch(e) {
-      if (e.key === 'Enter') {
-        const q = document.getElementById('searchInput').value.trim();
-        if (q) {
-          trackEvent('Search Performed', { query: q });
-          showToast('Searching: ' + q);
-        }
+    // ───────── Checkout ─────────
+    let payMode = 'Credit Card';
+    function viewCheckout(app) {
+      if (!cart.length) {
+        app.innerHTML = '<div class="empty"><div style="font-size:60px">🛒</div><h2>Your cart is empty</h2><button class="btn btn-primary" onclick="go(\'/\')">Continue shopping</button></div>';
+        pageViewed('Checkout (empty cart)'); return;
       }
+      const t = cartTotals();
+      const s = session || {};
+      app.innerHTML = `<h1 class="page-title">Checkout</h1>
+        <div class="checkout">
+          <div>
+            <div class="panel">
+              ${session
+                ? `<h2>Contact details</h2><div style="margin-bottom:6px"><span class="tag">Logged in</span></div>`
+                : `<h2>Guest checkout</h2><div style="font-size:14px;color:var(--muted)">No account needed. Already a customer? <a onclick="go('/login')">Log in</a> · <a onclick="go('/register')">Register</a></div>`}
+              <div class="row2"><div><label>Full name</label><input type="text" id="cName" value="${esc(s.name || '')}" placeholder="Jane Doe"></div>
+              <div><label>Phone (with country code)</label><input type="tel" id="cPhone" value="${esc(s.phone || '')}" placeholder="+919876543210"></div></div>
+              <label>Email</label><input type="email" id="cEmail" value="${esc(s.email || '')}" placeholder="you@example.com">
+            </div>
+            <div class="panel" style="margin-top:18px">
+              <h2>Shipping address</h2>
+              <label>Address</label><input type="text" id="cAddr" placeholder="221B Baker Street">
+              <div class="row2"><div><label>City</label><input type="text" id="cCity" placeholder="Mumbai"></div>
+              <div><label>PIN / ZIP</label><input type="text" id="cZip" placeholder="400001"></div></div>
+            </div>
+            <div class="panel" style="margin-top:18px">
+              <h2>Payment (demo)</h2>
+              <label>Payment mode</label>
+              <select id="cPay" onchange="payMode=this.value"><option>Credit Card</option><option>Debit Card</option><option>UPI</option><option>Net Banking</option><option>Cash on Delivery</option></select>
+            </div>
+            <div class="err" id="cErr"></div>
+          </div>
+          <div class="panel">
+            <h2>Order summary</h2>
+            ${cart.map(i => { const p = prodById(i.id); return `<div class="mini"><div class="em" style="background:${catById(p.cat).bg}">${p.icon}</div><div class="grow">${esc(p.name)}<br><span style="color:var(--muted)">Qty ${i.qty}</span></div><b>${money(p.price * i.qty)}</b></div>`; }).join('')}
+            <div class="sum-line"><span>Subtotal</span><span>${money(t.subtotal)}</span></div>
+            <div class="sum-line"><span>Shipping</span><span>${t.shipping ? money(t.shipping) : 'FREE'}</span></div>
+            <div class="sum-line total"><span>Total</span><span>${money(t.total)}</span></div>
+            <button class="btn btn-accent btn-block" style="margin-top:14px" onclick="placeOrder()">${session ? 'Place order' : 'Place order as guest'}</button>
+          </div>
+        </div>`;
+      document.getElementById('cPay').value = payMode;
+      pageViewed('Checkout', { cart_value: t.total, is_guest: !session });
+      trackEvent('Checkout Started', { item_count: t.items, cart_value: t.total, is_guest: !session });
     }
 
-    // ───────── Login ─────────
-    function openLogin() {
-      document.getElementById('loginModal').classList.add('show');
-      trackEvent('Login Modal Opened', {});
-    }
-    function closeLogin() {
-      document.getElementById('loginModal').classList.remove('show');
-    }
-    function handleUserLogin() {
-      const identity = document.getElementById('identity').value;
-      const email = document.getElementById('email').value;
-      const name = document.getElementById('name').value;
-      if (!identity || !email || !name) { alert('Please fill in all fields'); return; }
-      clevertap.onUserLogin.push({
-        Site: { Identity: identity, Email: email, Name: name }
+    function placeOrder() {
+      const name = document.getElementById('cName').value.trim();
+      const email = document.getElementById('cEmail').value.trim().toLowerCase();
+      const phone = document.getElementById('cPhone').value.trim();
+      const addr = document.getElementById('cAddr').value.trim();
+      const city = document.getElementById('cCity').value.trim();
+      const zip = document.getElementById('cZip').value.trim();
+      const err = document.getElementById('cErr');
+      if (!name) { err.textContent = 'Please enter your name.'; return; }
+      if (!emailOk(email)) { err.textContent = 'Please enter a valid email.'; return; }
+      if (!phoneOk(phone)) { err.textContent = 'Phone must include country code, e.g. +919876543210.'; return; }
+      if (!addr || !city || !zip) { err.textContent = 'Please complete the shipping address.'; return; }
+
+      const t = cartTotals();
+      const orderId = 'ORD' + Date.now().toString(36).toUpperCase();
+      const items = cart.map(i => { const p = prodById(i.id); return { id: p.id, name: p.name, category: catById(p.cat).name, price: p.price, qty: i.qty }; });
+
+      if (!session) {
+        // Guest checkout — onUserLogin WITHOUT an Identity (CleverTap matches on Email / Phone)
+        ctLogin({ Name: name, Email: email, Phone: phone });
+        trackEvent('Guest Checkout', { name, email, phone, cart_value: t.total, item_count: t.items, payment_mode: payMode });
+      }
+
+      // CleverTap Charged event
+      trackEvent('Charged', {
+        'Amount': Number(t.total.toFixed(2)),
+        'Payment mode': payMode,
+        'Charged ID': orderId,
+        'Delivery city': city,
+        'Is guest': !session,
+        'Items': items.map(i => ({ 'Product id': i.id, 'Product name': i.name, 'Category': i.category, 'Price': i.price, 'Quantity': i.qty }))
       });
-      trackEvent('User Logged In', { identity, email, name });
-      closeLogin();
-      showToast('Welcome, ' + name);
+
+      const order = { id: orderId, name, email, phone, addr, city, zip, payMode, items, totals: t, guest: !session };
+      save('demo_last_order', order);
+      cart = []; save('demo_cart', cart); renderCart();
+      go('/order/' + orderId);
     }
 
-    // 🔔 Push opt-in — wired to the native CleverTap notifications prompt
+    function viewOrder(app, id) {
+      const o = load('demo_last_order', null);
+      if (!o || o.id !== id) return go('/');
+      app.innerHTML = `<div class="success">
+        <div class="big">✅</div><h1>Thank you, ${esc(o.name.split(' ')[0])}!</h1>
+        <p>Your order <b>${esc(o.id)}</b> has been placed${o.guest ? ' as a guest' : ''}. A confirmation will be sent to <b>${esc(o.email)}</b>.</p>
+        <div style="text-align:left;margin:20px 0">${o.items.map(i => `<div class="sum-line"><span>${esc(i.name)} × ${i.qty}</span><span>${money(i.price * i.qty)}</span></div>`).join('')}
+        <div class="sum-line total"><span>Total paid (${esc(o.payMode)})</span><span>${money(o.totals.total)}</span></div></div>
+        ${o.guest ? '<p style="font-size:14px;color:var(--muted)">Want to track orders faster next time? <a onclick="go(\'/register\')">Create an account</a></p>' : ''}
+        <button class="btn btn-primary" onclick="go('/')">Continue shopping</button>
+      </div>`;
+      pageViewed('Order Confirmation', { order_id: o.id });
+    }
+
+    // ───────── Push / Inbox bell ─────────
+    clevertap.notifications.push({
+      titleText: 'Would you like to receive Push Notifications?',
+      bodyText: 'We promise to only send you relevant content and give you updates on your transactions',
+      okButtonText: 'Sign me up!', rejectButtonText: 'No thanks', okButtonColor: '#2563EB'
+    });
     function enablePush() {
-      // Diagnostics — open the browser console to see why the popup may not be showing
-      const permission = (typeof Notification !== 'undefined') ? Notification.permission : 'unsupported';
-      console.log('[enablePush] Notification.permission =', permission);
-      console.log('[enablePush] location.protocol =', location.protocol);
-
-     
       clevertap.notifications.push({
         titleText: 'Would you like to receive Push Notifications?',
         bodyText: 'We promise to only send you relevant content and give you updates on your transactions',
-        okButtonText: 'Sign me up!',
-        rejectButtonText: 'No thanks',
-        okButtonColor: '#F28046'
+        okButtonText: 'Sign me up!', rejectButtonText: 'No thanks', okButtonColor: '#2563EB'
       });
       trackEvent('Push Opt-in Shown', { source: 'enable_push_button' });
     }
-
-    // Dev helper: clears CleverTap's "user dismissed" memory so the prompt shows again.
-    // Call resetPushPrompt() in the console during testing.
     function resetPushPrompt() {
-      Object.keys(localStorage).forEach(k => {
-        if (k.toLowerCase().includes('wzrk') || k.toLowerCase().includes('notif')) {
-          console.log('Removing localStorage key:', k);
-          localStorage.removeItem(k);
-        }
-      });
-      showToast('Push prompt state reset. Click Enable Push again.');
+      Object.keys(localStorage).forEach(k => { if (/wzrk|notif/i.test(k)) localStorage.removeItem(k); });
+      showToast('Push prompt state reset.');
     }
     window.resetPushPrompt = resetPushPrompt;
-
-    function trackProductViewed() {
-      trackEvent('Product Viewed', { source: 'manual_button' });
-      showToast('Product Viewed event fired');
-    }
-
-    // ───────── Notification bell ─────────
-    function onBellClick() {
-      console.log("Inbox button clicked")
-    }
-
     function setBellBadge(count) {
-      const badge = document.getElementById('notification_bell_badge');
-      if (!badge) return;
-      badge.textContent = count;
-      badge.classList.toggle('show', count > 0);
+      const b = document.getElementById('notification_bell_badge');
+      if (!b) return;
+      b.textContent = count; b.classList.toggle('show', count > 0);
     }
     window.setBellBadge = setBellBadge;
 
-    // ───────── Hero banner (driven by CleverTap Native Display) ─────────
-    // Default state — overwritten if a CT_web_native_display payload arrives.
-    let heroState = {
-      topic: 'home_page_banner',
-      title: "Today's best deals, all in one place",
-      body: "Browse the latest catalogues from your favourite stores. Save offers, share with friends, never miss a price drop.",
-      button_text: "Explore Deals",
-      source: 'default'
-    };
-
-    // Holds the payload if it arrives before the DOM is ready (e.g. Visual Editor builder mode).
+    // ───────── Hero banner (CleverTap Native Display, topic = home_page_banner) ─────────
+    let heroState = { topic: 'home_page_banner', title: 'Big savings on everyday essentials', body: '', button_text: 'Shop now', source: 'default' };
     let pendingHeroContent = null;
 
     function applyHomeBanner(content) {
       if (!content) return;
-
-      const titleEl = document.getElementById('heroTitle');
-      const bodyEl  = document.getElementById('heroBody');
-      const ctaEl   = document.getElementById('heroCta');
-
-      // If the hero hasn't rendered yet (e.g. SDK fired CT_web_native_display before DOMContentLoaded),
-      // stash the payload and re-apply once the DOM is ready.
-      if (!titleEl || !bodyEl || !ctaEl) {
-        pendingHeroContent = content;
-        console.log('[applyHomeBanner] Hero not in DOM yet — payload queued for replay after DOMContentLoaded.');
-        return;
-      }
-
-      if (content.title)       titleEl.textContent = content.title;
-      if (content.body)        bodyEl.textContent  = content.body;
-      if (content.button_text) ctaEl.textContent   = content.button_text + ' →';
-
-      heroState = {
-        topic: 'home_page_banner',
-        title: content.title || heroState.title,
-        body: content.body || heroState.body,
-        button_text: content.button_text || heroState.button_text,
-        source: 'clevertap_native_display'
-      };
-
-      trackEvent('Native Display Rendered', {
-        topic: 'home_page_banner',
-        title: heroState.title,
-        button_text: heroState.button_text
-      });
+      const titleEl = document.getElementById('heroTitle'), bodyEl = document.getElementById('heroBody'), ctaEl = document.getElementById('heroCta');
+      if (!titleEl || !bodyEl || !ctaEl) { pendingHeroContent = content; return; }  // hero not on screen — replay on next home render
+      if (content.title) titleEl.textContent = content.title;
+      if (content.body) bodyEl.textContent = content.body;
+      if (content.button_text) ctaEl.textContent = content.button_text + ' →';
+      heroState = { topic: 'home_page_banner', title: content.title || heroState.title, body: content.body || heroState.body, button_text: content.button_text || heroState.button_text, source: 'clevertap_native_display' };
+      trackEvent('Native Display Rendered', { topic: 'home_page_banner', title: heroState.title, button_text: heroState.button_text });
     }
-
+    function applyPendingHero() {
+      if (pendingHeroContent) { const c = pendingHeroContent; pendingHeroContent = null; applyHomeBanner(c); }
+    }
     function onHeroCtaClick() {
-      trackEvent('Hero CTA Clicked', {
-        cta: heroState.button_text,
-        topic: heroState.topic,
-        title: heroState.title,
-        source: heroState.source
-      });
-      document.getElementById('leafletsGrid').scrollIntoView({ behavior: 'smooth' });
+      trackEvent('Hero CTA Clicked', { cta: heroState.button_text, topic: heroState.topic, title: heroState.title, source: heroState.source });
+      document.getElementById('featuredGrid').scrollIntoView({ behavior: 'smooth' });
     }
-
-    // 🔹 CleverTap Web Native Display listener — fires when the SDK delivers a campaign payload.
-    // The dashboard payload for the home banner uses topic = "home_page_banner" with title/body/button_text keys.
-    document.addEventListener("CT_web_native_display", function(event) {
-      console.log('[CT_web_native_display] full event:', event);
-      console.log('[CT_web_native_display] event.detail payload:', event.detail);
- const data = event.detail;
-   clevertap.renderNotificationViewed(data);
-
+    document.addEventListener('CT_web_native_display', function (event) {
       try {
-        let payloads = event.detail;
-        if (!payloads) return;
+        if (event.detail && window.clevertap.renderNotificationViewed) clevertap.renderNotificationViewed(event.detail);
+        let payloads = event.detail; if (!payloads) return;
         if (!Array.isArray(payloads)) payloads = [payloads];
-
-        payloads.forEach((p, idx) => {
-          // Payload shape from CleverTap can be { msgContent: {...} }, { kv: {...} } or the kv pairs at the top level.
+        payloads.forEach(p => {
           const content = (p && (p.msgContent || p.kv)) || p || {};
-          console.log(`[CT_web_native_display] payload[${idx}] resolved content:`, content);
-
-          const topic = content.topic || (p && p.topic);
-          if (topic === 'home_page_banner') {
-            applyHomeBanner(content);
-          }
+          if ((content.topic || (p && p.topic)) === 'home_page_banner') applyHomeBanner(content);
         });
-      } catch (e) {
-        console.warn('Failed to process CT_web_native_display payload', e);
-      }
+      } catch (e) { console.warn('Failed to process CT_web_native_display payload', e); }
     });
 
     // ───────── Boot ─────────
     document.addEventListener('DOMContentLoaded', () => {
-      renderStores();
-      renderLeaflets();
-
-      // If a CT_web_native_display payload arrived before the hero existed, replay it now.
-      if (pendingHeroContent) {
-        console.log('[boot] Replaying queued hero payload.');
-        const queued = pendingHeroContent;
-        pendingHeroContent = null;
-        applyHomeBanner(queued);
-      }
-
-      trackEvent('Page Viewed', {
-        page_name: 'Home',
-        store_count: stores.length,
-        leaflet_count: leaflets.length
-      });
-
-      // Visual Editor: confirm Web SDK version is >= 1.13.1
-      function logSDKVersion(attempt = 0) {
-        if (window.clevertap && typeof window.clevertap.getSDKVersion === 'function') {
-          const v = window.clevertap.getSDKVersion();
-          console.log('[CleverTap] Web SDK version:', v, '(Visual Editor needs >= 1.13.1)');
-        } else if (attempt < 20) {
-          setTimeout(() => logSDKVersion(attempt + 1), 250);
-        } else {
-          console.warn('[CleverTap] getSDKVersion not available — SDK may not have loaded.');
-        }
-      }
-      logSDKVersion();
+      document.getElementById('catNav').innerHTML =
+        '<a onclick="go(\'/\')">All</a>' + categories.map(c => `<a data-id="${c.id}" onclick="go('/category/${c.id}')">${c.icon} ${c.name}</a>`).join('');
+      renderAuth();
+      renderCart();
+      route();
     });
   </script>
 </body>
