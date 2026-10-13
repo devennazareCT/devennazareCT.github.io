@@ -443,9 +443,9 @@
 
     function viewLogin(app) {
       app.innerHTML = `<div class="form-card">
-        <h1>Welcome back</h1><div class="sub">Log in to your Demo Store account.</div>
-        <label>Email</label><input type="email" id="lEmail" placeholder="you@example.com">
-        <label>Password</label><input type="password" id="lPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+        <h1>Welcome back</h1><div class="sub">Demo login: just enter an Identity and Email. No password needed.</div>
+        <label>Identity</label><input type="text" id="lIdentity" placeholder="e.g. user123">
+        <label>Email</label><input type="email" id="lEmail" placeholder="you@example.com" onkeydown="if(event.key==='Enter')doLogin()">
         <div class="err" id="lErr"></div>
         <button class="btn btn-primary btn-block" onclick="doLogin()">Log in</button>
         <div class="alt">New here? <a onclick="go('/register')">Create an account</a></div>
@@ -453,29 +453,28 @@
       pageViewed('Login');
     }
     function doLogin() {
+      const identity = document.getElementById('lIdentity').value.trim();
       const email = document.getElementById('lEmail').value.trim().toLowerCase();
-      const pass = document.getElementById('lPass').value;
       const err = document.getElementById('lErr');
-      if (!emailOk(email) || !pass) { err.textContent = 'Enter a valid email and password.'; return; }
-      const u = users.find(x => x.email === email && x.pass === pass);
-      if (!u) { err.textContent = 'Invalid credentials. (Demo: register first.)'; trackEvent('Login Failed', { email }); return; }
-      session = { name: u.name, email: u.email, phone: u.phone, identity: u.identity };
+      if (!identity) { err.textContent = 'Please enter an Identity.'; return; }
+      if (!emailOk(email)) { err.textContent = 'Please enter a valid email.'; return; }
+      const known = users.find(u => u.identity === identity) || {};
+      const name = known.name || identity;
+      session = { name, email, phone: known.phone || '', identity };
       save('demo_session', session);
-      const profile = { Identity: u.identity, Name: u.name, Email: u.email };
-      if (u.phone) profile.Phone = u.phone;
-      ctLogin(profile);
-      trackEvent('Login', { method: 'email', identity: u.identity });
-      renderAuth(); showToast('Welcome back, ' + u.name.split(' ')[0]);
+      ctLogin({ Identity: identity, Email: email });
+      trackEvent('Login', { method: 'identity_email', identity, email });
+      renderAuth(); showToast('Welcome back, ' + name.split(' ')[0]);
       go(cart.length ? '/checkout' : '/');
     }
 
     function viewRegister(app) {
       app.innerHTML = `<div class="form-card">
-        <h1>Create account</h1><div class="sub">Join Demo Store in a few seconds.</div>
+        <h1>Create account</h1><div class="sub">Demo registration. No password needed.</div>
         <label>Full name</label><input type="text" id="rName" placeholder="Jane Doe">
+        <label>Identity</label><input type="text" id="rIdentity" placeholder="e.g. user123">
         <label>Email</label><input type="email" id="rEmail" placeholder="you@example.com">
         <label>Phone (with country code)</label><input type="tel" id="rPhone" placeholder="+919876543210">
-        <label>Password</label><input type="password" id="rPass" placeholder="At least 6 characters">
         <div class="err" id="rErr"></div>
         <button class="btn btn-primary btn-block" onclick="doRegister()">Register</button>
         <div class="alt">Already have an account? <a onclick="go('/login')">Log in</a></div>
@@ -484,24 +483,23 @@
     }
     function doRegister() {
       const name = document.getElementById('rName').value.trim();
+      const identity = document.getElementById('rIdentity').value.trim();
       const email = document.getElementById('rEmail').value.trim().toLowerCase();
       const phone = document.getElementById('rPhone').value.trim();
-      const pass = document.getElementById('rPass').value;
       const err = document.getElementById('rErr');
       if (!name) { err.textContent = 'Please enter your name.'; return; }
+      if (!identity) { err.textContent = 'Please enter an Identity.'; return; }
       if (!emailOk(email)) { err.textContent = 'Please enter a valid email.'; return; }
       if (phone && !phoneOk(phone)) { err.textContent = 'Phone must include country code, e.g. +919876543210.'; return; }
-      if (pass.length < 6) { err.textContent = 'Password must be at least 6 characters.'; return; }
-      if (users.some(u => u.email === email)) { err.textContent = 'An account with this email already exists.'; return; }
-      const identity = 'user_' + Date.now().toString(36);
-      users.push({ identity, name, email, phone, pass });
+      users = users.filter(u => u.identity !== identity);
+      users.push({ identity, name, email, phone });
       save('demo_users', users);
       session = { name, email, phone, identity };
       save('demo_session', session);
       const profile = { Identity: identity, Name: name, Email: email };
       if (phone) profile.Phone = phone;
       ctLogin(profile);
-      trackEvent('Register', { method: 'email', identity, email });
+      trackEvent('Register', { method: 'identity_email', identity, email });
       renderAuth(); showToast('Account created. Welcome, ' + name.split(' ')[0] + '!');
       go(cart.length ? '/checkout' : '/');
     }
