@@ -617,18 +617,22 @@
     }
 
     // ───────── Push / Inbox bell ─────────
-    clevertap.notifications.push({
-      titleText: 'Would you like to receive Push Notifications?',
-      bodyText: 'We promise to only send you relevant content and give you updates on your transactions',
-      okButtonText: 'Sign me up!', rejectButtonText: 'No thanks', okButtonColor: '#2563EB'
-    });
+    // Permission must be requested directly inside the click handler (required by iOS), so no auto-prompt on load.
     function enablePush() {
-      clevertap.notifications.push({
-        titleText: 'Would you like to receive Push Notifications?',
-        bodyText: 'We promise to only send you relevant content and give you updates on your transactions',
-        okButtonText: 'Sign me up!', rejectButtonText: 'No thanks', okButtonColor: '#2563EB'
+      if (typeof Notification === 'undefined') {
+        showToast('Push not supported here (on iOS, install from Safari)');
+        trackEvent('Push Permission Result', { permission: 'unsupported' });
+        return;
+      }
+      Notification.requestPermission().then(permission => {
+        console.log('Push notification permission:', permission);
+        showToast('Push permission: ' + permission);
+        trackEvent('Push Permission Result', { permission });
+        if (permission === 'granted') {
+          // Permission is granted, so register this browser with CleverTap without showing its soft prompt again
+          clevertap.notifications.push({ skipDialog: true });
+        }
       });
-      trackEvent('Push Opt-in Shown', { source: 'enable_push_button' });
     }
     function resetPushPrompt() {
       Object.keys(localStorage).forEach(k => { if (/wzrk|notif/i.test(k)) localStorage.removeItem(k); });
