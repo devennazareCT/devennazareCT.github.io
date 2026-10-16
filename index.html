@@ -657,6 +657,13 @@
       else console.log('Push token: no subscription found');
     }
     // On load, if the user already granted permission, print the existing token
+    // Register the service worker on every load (not only on tap) so it is already active when push is enabled
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/clevertap_sw.js', { scope: '/' })
+        .then(() => navigator.serviceWorker.ready)
+        .then(reg => console.log('Service worker ready:', reg.scope))
+        .catch(e => console.error('Service worker registration failed:', e));
+    }
     window.addEventListener('load', () => {
       if (typeof Notification !== 'undefined' && Notification.permission === 'granted' && 'serviceWorker' in navigator) { logFcmToken(); logPushToken(); }
     });

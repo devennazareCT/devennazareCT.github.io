@@ -12,3 +12,7 @@ firebase.initializeApp({
 });
 // Initialised so FCM can display notification-payload messages in the background
 firebase.messaging();
+
+// Activate a new version immediately so installed PWAs don't keep a stale worker waiting
+self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
