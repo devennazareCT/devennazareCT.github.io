@@ -670,11 +670,30 @@
     function isStandalonePWA() {
       return window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
     }
+    // iOS browsers all run on WebKit; the UA token tells which UI the page was opened from
+    function detectBrowser() {
+      const ua = navigator.userAgent;
+      if (/CriOS/i.test(ua)) return 'Chrome (iOS, WebKit)';
+      if (/FxiOS/i.test(ua)) return 'Firefox (iOS, WebKit)';
+      if (/EdgiOS/i.test(ua)) return 'Edge (iOS, WebKit)';
+      if (/Chrome\//i.test(ua) && !/Edg\//i.test(ua)) return 'Chrome (Blink)';
+      if (/Edg\//i.test(ua)) return 'Edge (Blink)';
+      if (/Firefox\//i.test(ua)) return 'Firefox (Gecko)';
+      if (/Safari\//i.test(ua)) return 'Safari (WebKit)';
+      return 'Unknown / standalone WebKit web view';
+    }
+    function logBrowserInfo() {
+      console.log('Browser:', detectBrowser());
+      console.log('User agent:', navigator.userAgent);
+      console.log('Standalone PWA:', isStandalonePWA(), '| iOS:', isIOS());
+    }
+    logBrowserInfo();
     function isIOS() {
       return /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     }
     // iOS/iPadOS 16.4+ only exposes Web Push to a Home Screen PWA, and needs an active service worker + a user gesture.
     async function enablePush() {
+      logBrowserInfo();
       if (isIOS() && !isStandalonePWA()) {
         showToast('On iOS: Share → Add to Home Screen, then open the app and tap Push');
         trackEvent('Push Permission Result', { permission: 'ios_not_installed' });
