@@ -618,21 +618,45 @@
 
     // ───────── Push / Inbox bell ─────────
     // Permission must be requested directly inside the click handler (required by iOS), so no auto-prompt on load.
-    function enablePush() {
-      if (typeof Notification === 'undefined') {
-        showToast('Push not supported here (on iOS, install from Safari)');
+    function isStandalonePWA() {
+      return window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+    }
+    function isIOS() {
+      return /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    }
+    // iOS/iPadOS 16.4+ only exposes Web Push to a Home Screen PWA, and needs an active service worker + a user gesture.
+    async function enablePush() {
+      if (isIOS() && !isStandalonePWA()) {
+        showToast('On iOS: Share → Add to Home Screen, then open the app and tap Push');
+        trackEvent('Push Permission Result', { permission: 'ios_not_installed' });
+        return;
+      }
+      if (typeof Notification === 'undefined' || !('serviceWorker' in navigator) || !('PushManager' in window)) {
+        showToast('Push not supported on this browser');
         trackEvent('Push Permission Result', { permission: 'unsupported' });
         return;
       }
-      Notification.requestPermission().then(permission => {
+      try {
+        // Ask first, synchronously inside the tap handler, so iOS accepts it as a user gesture
+        const permissionPromise = Notification.requestPermission();
+        // Register the CleverTap service worker (push + notificationclick handlers) and wait until it is active
+        await navigator.serviceWorker.register('/clevertap_sw.js', { scope: '/' });
+        const registration = await navigator.serviceWorker.ready;
+        const permission = await permissionPromise;
         console.log('Push notification permission:', permission);
         showToast('Push permission: ' + permission);
         trackEvent('Push Permission Result', { permission });
         if (permission === 'granted') {
           // Permission is granted, so register this browser with CleverTap without showing its soft prompt again
-          clevertap.notifications.push({ skipDialog: true });
+          clevertap.notifications.push({ serviceWorkerPath: '/clevertap_sw.js', skipDialog: true });
+          const sub = await registration.pushManager.getSubscription();
+          console.log('Push subscription:', sub ? sub.endpoint : 'none yet (CleverTap subscribes)');
         }
-      });
+      } catch (err) {
+        console.error('Push setup failed:', err);
+        showToast('Push setup failed: ' + (err && err.message ? err.message : err));
+        trackEvent('Push Permission Result', { permission: 'error' });
+      }
     }
     function resetPushPrompt() {
       Object.keys(localStorage).forEach(k => { if (/wzrk|notif/i.test(k)) localStorage.removeItem(k); });
