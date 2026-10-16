@@ -618,6 +618,25 @@
 
     // ───────── Push / Inbox bell ─────────
     // Permission must be requested directly inside the click handler (required by iOS), so no auto-prompt on load.
+    // Logs the push subscription (token). CleverTap subscribes asynchronously, so retry for a few seconds.
+    async function logPushToken(registration, attempt) {
+      attempt = attempt || 1;
+      try {
+        const reg = registration || await navigator.serviceWorker.getRegistration('/clevertap_sw.js') || await navigator.serviceWorker.getRegistration();
+        const sub = reg && await reg.pushManager.getSubscription();
+        if (sub) {
+          console.log('Push token (endpoint):', sub.endpoint);
+          console.log('Push subscription JSON:', JSON.stringify(sub.toJSON()));
+          return;
+        }
+      } catch (e) { console.warn('Push token lookup failed:', e); }
+      if (attempt < 10) setTimeout(() => logPushToken(registration, attempt + 1), 1000);
+      else console.log('Push token: no subscription found');
+    }
+    // On load, if the user already granted permission, print the existing token
+    window.addEventListener('load', () => {
+      if (typeof Notification !== 'undefined' && Notification.permission === 'granted' && 'serviceWorker' in navigator) logPushToken();
+    });
     function isStandalonePWA() {
       return window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
     }
@@ -649,8 +668,7 @@
         if (permission === 'granted') {
           // Permission is granted, so register this browser with CleverTap without showing its soft prompt again
           clevertap.notifications.push({ serviceWorkerPath: '/clevertap_sw.js', skipDialog: true });
-          const sub = await registration.pushManager.getSubscription();
-          console.log('Push subscription:', sub ? sub.endpoint : 'none yet (CleverTap subscribes)');
+          logPushToken(registration);
         }
       } catch (err) {
         console.error('Push setup failed:', err);
